@@ -1,0 +1,114 @@
+﻿@model QuizWeb.Models.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="login-form">
+    <div class="tabs">
+        <input type="radio" name="inset" value="" id="tab_1" checked>
+        <label for="tab_1">LoginTest.cs</label>
+
+        <input type="radio" name="inset" value="" id="tab_2">
+        <label for="tab_2">RegisterTest.cs</label>
+
+        <div id="txt_1">
+
+            @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+            {
+                <div class="button-div">
+                    <button class="btn btn-default" type="submit"><span class="glyphicon glyphicon-play text-success"></span> Run</button>
+                </div>
+                <div>[<span class="object-name-text">Test</span>]</div>
+                <div><span class="object-name-text">public void</span> LoginTest()</div>
+                <div>{</div>
+                <div class="tab-div">
+                    <div>
+                        <span class="object-name-text">var</span> login = <span class="string-text">"<input type="text" name="Login" required="" id="Login" placeholder="Login"/>"</span>;
+                    </div>
+                    <div>
+                        <span class="object-name-text">var</span> pass = <span class="string-text">"<input type="password" name="Password" required="" id="Password" placeholder="Password"/>"</span>;
+                    </div>
+                    <div><span class="object-name-text">var</span> result = _controller.Login(login, pass);</div>
+                    <div><span class="object-name-text">Assert</span>.IsTrue(result);</div>
+                </div>
+                <div>}</div>
+            }
+        </div>
+
+
+        <div id="txt_2">
+
+        </div>
+    </div>
+
+
+</div>
+
+<style>
+    .tab-div { padding-left: 20px; }
+
+    .object-name-text { color: #1351ee !important; }
+
+    .string-text { color: #c97708 !important; }
+
+    .login-form {
+        background-color: azure;
+        display: table;
+        margin: 0 auto;
+        min-height: 350px;
+        padding-top: 30px;
+        width: 35%;
+    }
+
+    .login-form input {
+        background-color: white !important;
+        border-radius: 5px;
+        color: #c97708 !important;
+    }
+
+    .login-form .button-div { padding-left: 80%; }
+
+    .tabs {
+        background: floralwhite;
+        border: 0;
+        border: 2px solid gainsboro;
+        height: 100%;
+        margin: 0 auto;
+        padding: 3px;
+        width: 100%;
+    }
+
+    .tabs > input { display: none; }
+
+    .tabs > div {
+        background: transparent;
+        border-top: 2px solid gainsboro;
+        display: none;
+        padding: 12px;
+        padding-left: 25px;
+    }
+
+    .tabs > label {
+        background: transparent;
+        border-left: 0;
+        color: #666666;
+        cursor: pointer;
+        display: inline-block;
+        font-weight: normal !important;
+        margin: 0 -5px -1px 0;
+        padding: 7px;
+        text-align: center;
+        width: 30%;
+    }
+
+    .tabs > input:checked + label {
+        background: #2d25bf;
+        border: 1px solid #C0C0C0;
+        color: white;
+    }
+
+    #tab_1:checked ~ #txt_1,
+    #tab_2:checked ~ #txt_2 { display: block; }
+</style>

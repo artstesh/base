@@ -1,0 +1,22 @@
+﻿@model IEnumerable<artstesh.data.Models.ArticleModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<table class="article-list-table">
+    <thead>
+    <tr>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <th>
+                @Html.Partial("_ArticlePartial", item)</th>
+        </tr>
+    }
+    </tbody>
+</table>

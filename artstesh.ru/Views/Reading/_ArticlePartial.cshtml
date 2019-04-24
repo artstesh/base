@@ -1,0 +1,8 @@
+@model artstesh.data.Models.ArticleModel
+
+<a href="@Url.Action("Details", new {id = Model.Id})" class="non-styled-link">
+    <div class="article-preview-div">
+        <div class="article-preview-title">@Model.Title</div>
+        <div class="article-preview-description">@Model.Preview</div>
+    </div>
+</a>
