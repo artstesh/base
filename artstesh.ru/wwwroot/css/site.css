@@ -80,7 +80,7 @@ body {
     }
 /**************************************************************************/
 
-/*Article Start*******************************************************************/
+/*Article List Start*******************************************************************/
 .article-list-table{
     width: 100%;
     height: 100%;
@@ -106,4 +106,47 @@ body {
     font-family: "Droid Sans Mono";
     
 }
+/*Article List End*********************************************************************/
+
+/*Article Start*******************************************************************/
+.article-title{
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: #16a479;
+    font-weight: bold;
+    font-size: large;
+}
+.article-creation-date{
+    width: 100%;
+    text-align: right;
+}
+.article-index{
+}
+
+.article-index p{
+    margin: 0;
+}
+.sub-index-p{
+    padding-left: 15px;
+}
+
+.article-sub-title{
+    margin-top: 20px;
+    margin-bottom: 8px;
+    text-align: center;
+    color: #1c678b;
+    font-weight: bold;
+}
+.article-body-div{
+    text-align: justify;
+}
+.article-sub-sub-title{
+    padding-left: 25px;
+    margin-top: 10px;
+    margin-bottom: 4px;
+    font-style: italic;
+    color: darkcyan;
+}
+
 /*Article End*********************************************************************/

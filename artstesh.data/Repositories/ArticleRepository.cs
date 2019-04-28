@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using artstesh.data.DbContext;
 using artstesh.data.Entities;
@@ -17,7 +18,7 @@ namespace artstesh.data.Repositories
 
         public async Task<List<Article>> Get()
         {
-            return await _context.Articles.ToListAsync();
+            return _context.Articles.OrderByDescending(e => e.Created).ToList();
         }
 
         public async Task<int> Create(Article article)

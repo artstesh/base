@@ -35,13 +35,13 @@ namespace artstesh.ru.Services
 
         public async Task<ArticleModel> GetCached(int id)
         {
-            var bytes = await _cache.Get(_cacheKey+id);
+            var bytes = await _cache.Get(_cacheKey + id);
             var article = (ArticleModel) null;
             if (bytes != null && bytes.Length > 0)
                 article = ObjectByteConverter.ByteArrayToObject<ArticleModel>(bytes);
             if (article != null) return article;
             article = (await _repository.Get(id)).ToModel();
-            await _cache.Set(_cacheKey+id, article);
+            await _cache.Set(_cacheKey + id, article);
             return article;
         }
 
@@ -53,11 +53,13 @@ namespace artstesh.ru.Services
 
         public async Task<bool> Update(ArticleModel article)
         {
+            await _cache.Remove(_cacheKey + article.Id);
             return await _repository.Update(article.FromModel());
         }
 
         public async Task<bool> Delete(int id)
         {
+            await _cache.Remove(_cacheKey + id);
             return await _repository.Delete(id);
         }
     }

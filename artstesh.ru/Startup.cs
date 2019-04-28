@@ -51,8 +51,9 @@ namespace artstesh.ru
             });
             services.AddScoped<IArticleRepository, ArticleRepository>();
             services.AddScoped<IArticleService, ArticleService>();
-            services.AddScoped<IConfigSettings, ConfigSettings>();
+            services.AddSingleton<IConfigSettings, ConfigSettings>();
             services.AddScoped<ICacheHelper, CacheHelper>();
+            services.AddSingleton<IGoogleRecaptchaService, GoogleRecaptchaService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

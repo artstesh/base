@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="yandex-verification" content="d9e7371f51e35e86" />
     <title>@ViewData["Title"] - artstesh.ru</title>
 
     <environment include="Development">
@@ -15,6 +16,7 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+    <!-- Yandex.Metrika counter --> <script type="text/javascript" > (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)}; m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)}) (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym"); ym(53464423, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true }); </script> <noscript><div><img src="https://mc.yandex.ru/watch/53464423" style="position:absolute; left:-9999px;" alt="" /></div></noscript> <!-- /Yandex.Metrika counter -->
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -26,7 +28,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">
+                <a asp-area="" asp-controller="Reading" asp-action="Index" class="navbar-brand">
                     <div id="logo"><div></div><span><span>#</span>Art</span></div>
                 </a>
             </div>
@@ -36,7 +38,6 @@
                     {
                         <li><a asp-area="" asp-controller="Article" asp-action="Index">Article</a></li>
                     }
-                    <li><a asp-area="" asp-controller="Reading" asp-action="Index">Reading</a></li>
                 </ul>
             </div>
         </div>

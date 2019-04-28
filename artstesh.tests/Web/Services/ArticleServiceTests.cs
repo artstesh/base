@@ -59,6 +59,7 @@ namespace artstesh.tests.Web.Services
         public async Task Update(ArticleModel model, bool expected)
         {
             _repository.Setup(e => e.Update(It.IsAny<Article>())).ReturnsAsync(expected);
+            _cache.Setup(e => e.Remove("article_"+model.Id)).Returns(Task.Run(() => { }));
             //
             var result = await _service.Update(model);
             //
@@ -70,6 +71,7 @@ namespace artstesh.tests.Web.Services
         public async Task Delete(int id, bool expected)
         {
             _repository.Setup(e => e.Delete(id)).ReturnsAsync(expected);
+            _cache.Setup(e => e.Remove("article_"+id)).Returns(Task.Run(() => { }));
             //
             var result = await _service.Delete(id);
             //

@@ -29,6 +29,8 @@ namespace C2c.Config
             keys.CacheLifeTime = Convert.ToInt32(temp.FirstOrDefault(e => e.Key == "CacheLifeTime")?.Value ?? "500");
             keys.Login = temp.FirstOrDefault(e => e.Key == "Login")?.Value;
             keys.Password = temp.FirstOrDefault(e => e.Key == "Password")?.Value;
+            keys.GoogleKey = temp.FirstOrDefault(e => e.Key == "GoogleKey")?.Value;
+            keys.GoogleSecretKey = temp.FirstOrDefault(e => e.Key == "GoogleSecretKey")?.Value;
             return keys;
         }
     }

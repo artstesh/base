@@ -22,6 +22,11 @@ namespace C2c.Helper
             return await _cache.GetAsync(key);
         }
 
+        public async Task Remove(string key)
+        {
+            await _cache.RemoveAsync(key);
+        }
+
         public async Task Set(string key, object obj, int cacheLifeTime =-1)
         {
             if (cacheLifeTime == -1) cacheLifeTime = _settings.ApplicationKeys.CacheLifeTime;

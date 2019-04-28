@@ -16,4 +16,15 @@
       <ProjectReference Include="..\artstesh.data\artstesh.data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="wwwroot\css\site.min.css">
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Update="Web.config">
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

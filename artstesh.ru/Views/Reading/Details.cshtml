@@ -1,41 +1,10 @@
 ﻿@model artstesh.data.Models.ArticleModel
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Title;
 }
 
-<h2>Details</h2>
+<div class="article-title">@Model.Title</div>
+<p class="article-creation-date">@Model.Created.ToString("d")</p>
 
-<div>
-    <h4>ArticleModel</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Text)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Text)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Preview)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Preview)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+@Html.Raw(Model.Text)

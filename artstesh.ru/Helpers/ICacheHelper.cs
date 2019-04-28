@@ -6,5 +6,6 @@ namespace C2c.Helper
     {
         Task<byte[]> Get(string key);
         Task Set(string key, object obj, int cacheLifeTime =-1);
+        Task Remove(string key);
     }
 }
