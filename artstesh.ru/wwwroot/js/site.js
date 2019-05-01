@@ -7,3 +7,8 @@ function ScrollToAnchor(id) {
         scrollTop: $(`#${id}`).offset().top-100
     }, 500);
 }
+
+function SwitchTab(id){
+    $('.box-wrap > div').hide();
+    $("#"+id).show();
+}

@@ -54,6 +54,7 @@ namespace artstesh.ru
             services.AddSingleton<IConfigSettings, ConfigSettings>();
             services.AddScoped<ICacheHelper, CacheHelper>();
             services.AddSingleton<IGoogleRecaptchaService, GoogleRecaptchaService>();
+            services.AddSingleton<ISubscribeRepository, SubscribeRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

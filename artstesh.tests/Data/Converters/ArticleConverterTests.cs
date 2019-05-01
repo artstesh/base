@@ -3,6 +3,7 @@ using artstesh.data.Entities;
 using artstesh.data.Helpers;
 using artstesh.data.Models;
 using artstesh.tests.FakeFactories;
+using SemanticComparison.Fluent;
 using Xunit;
 
 namespace artstesh.tests.Data.Converters
@@ -20,7 +21,7 @@ namespace artstesh.tests.Data.Converters
                 Created = article.Created, Id = article.Id, Text = text, Preview = article.Preview, Title = article.Title
             };
             //
-            var model = article.ToModel();
+            var model = article.ToModel().AsSource().OfLikeness<ArticleModel>();
             //
             Assert.True(model.Equals(expected));
         }
@@ -40,7 +41,7 @@ namespace artstesh.tests.Data.Converters
                 Created = article.Created, Id = article.Id, Text = StringCompressor.CompressString(article.Text), Preview = article.Preview, Title = article.Title
             };
             //
-            var model = article.FromModel();
+            var model = article.FromModel().AsSource().OfLikeness<Article>();
             //
             Assert.True(model.Equals(expected));
         }

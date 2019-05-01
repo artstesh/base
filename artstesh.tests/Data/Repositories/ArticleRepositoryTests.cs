@@ -17,8 +17,7 @@ namespace artstesh.tests.Data.Repositories
 
         public ArticleRepositoryTests()
         {
-            var builder = new DbContextOptionsBuilder<DataContext>().UseInMemoryDatabase();
-            _context = new DataContext(builder.Options);
+            _context = ContextFactory.GetContext();
             _repository = new ArticleRepository(_context);
         }
         
