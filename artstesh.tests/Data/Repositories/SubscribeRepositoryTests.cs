@@ -4,7 +4,6 @@ using artstesh.data.DbContext;
 using artstesh.data.Entities;
 using artstesh.data.Repositories;
 using artstesh.tests.FakeFactories;
-using Microsoft.EntityFrameworkCore;
 using SemanticComparison.Fluent;
 using Xunit;
 
@@ -58,6 +57,39 @@ namespace artstesh.tests.Data.Repositories
             //
             var source = result.First().AsSource().OfLikeness<Subscribe>();
             Assert.True(source.Equals(subscribe));
+        }
+
+        [Theory, AutoMoqData]
+        public async Task Get_Only_Active(Subscribe subscribe)
+        {
+            subscribe.IsActive = false;
+            _context.Subscribes.Add(subscribe);
+            _context.SaveChanges();
+            //
+            var result = await _repository.Get();
+            //
+            Assert.True(result.Count == 0);
+        }
+
+        [Theory, AutoMoqData]
+        public async Task Unsubscribe_Success(Subscribe subscribe)
+        {
+            subscribe.IsActive = true;
+            _context.Subscribes.Add(subscribe);
+            _context.SaveChanges();
+            //
+            var result = await _repository.Unsubscribe(subscribe.Secret);
+            //
+            Assert.True(result);
+            Assert.False(subscribe.IsActive);
+        }
+
+        [Theory, AutoMoqData]
+        public async Task Unsubscribe_No_Such_Entity(string secret)
+        {
+            var result = await _repository.Unsubscribe(secret);
+            //
+            Assert.False(result);
         }
     }
 }

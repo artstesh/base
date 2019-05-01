@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using artstesh.data.Converters;
-using artstesh.data.DbContext;
 using artstesh.data.Entities;
 using artstesh.data.Helpers;
 using artstesh.data.Models;
@@ -12,7 +10,6 @@ using artstesh.ru.Services;
 using artstesh.tests.FakeFactories;
 using C2c.Helper;
 using C2c.Services.Converters;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 

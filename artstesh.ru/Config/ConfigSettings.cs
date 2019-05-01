@@ -31,6 +31,9 @@ namespace C2c.Config
             keys.Password = temp.FirstOrDefault(e => e.Key == "Password")?.Value;
             keys.GoogleKey = temp.FirstOrDefault(e => e.Key == "GoogleKey")?.Value;
             keys.GoogleSecretKey = temp.FirstOrDefault(e => e.Key == "GoogleSecretKey")?.Value;
+            keys.MailFrom = temp.FirstOrDefault(e => e.Key == "MailFrom")?.Value;
+            keys.MailPass = temp.FirstOrDefault(e => e.Key == "MailPass")?.Value;
+            keys.MailServer = temp.FirstOrDefault(e => e.Key == "MailServer")?.Value;
             return keys;
         }
     }

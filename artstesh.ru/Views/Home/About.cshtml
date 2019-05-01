@@ -1,7 +1,124 @@
-﻿@{
-    ViewData["Title"] = "About";
-}
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewData["Message"]</h3>
+﻿<div class="article-body-div">
+    <p>
+        Постановка: необходим класс, принимающий на вход строку и возвращающий ее в обратном порядке. 
+        Создадим консольный проект First с классом 
+    </p>
+</div>
 
-<p>Use this area to provide additional information.</p>
+<div class="article-body-code">
+    <p>public class StringReverser</p>
+    <p>{</p>
+    <p>	public string Reverse(string input){return string.Empty;}</p>
+    <p>}</p>
+</div>
+
+<div class="article-body-div">
+    <p>
+        Создадим в этом же solution'e еще один проект - FirstTests, 
+        подключим @Html.ActionLink("необходимые библиотеки","Details","Reading",new{id=4}).
+        В данном примере мы рассмотрим работу и с nUnit и c xUnit, просто чтобы не повторять одно и то же в двух
+        отдельных статьях. В последующем примеры, вероятно, будут строиться на каком-то одном движке. </p>
+        
+    <p>    Создаем первый тестирующий класс StringReverserTests. Именование &lt;Имя класс&gt;Tests является
+        сложившейся традицией и я бы рекомендовал придерживаться такой практики, а не придумывать 
+        "особенные" имена для каждого класса. </p>
+        
+    <p>    Тем временем сталкиваемся с первым различием в работе с библиотеками: для того чтобы nUnit
+        понял, что StringReverserTests это именно класс с тестами необходимо добавить атрибут
+        [TestFixture], xUnit обходится без подобных церемоний.
+    </p>
+</div>
+<div class="article-body-code">
+    
+    
+    <div class="tabbed-area">
+    
+    	<ul class="tabs group">
+    	    <li onclick="SwitchTab('box-1')">nUnit</li>
+    	    <li onclick="SwitchTab('box-2')">xUnit</li>
+    	</ul>
+    	
+    	<div class="box-wrap">
+    	
+    		<div id="box-1">
+    [TestFixture]
+    public class StringReverserTests{}
+    		</div>
+    		
+    		<div id="box-2">
+    public class StringReverserTests{}
+    		</div>
+    	
+    	</div>
+    
+    </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+<div class="article-body-div">
+    <p>
+        И, собственно, сам тестирующий метод:
+    </p>
+</div>
+
+<div class="article-body-code">
+    
+[Test]
+public void Reverse_Success()
+{
+	var input = "text";
+	var expected = "txet";
+    var reverser = new StringReverser();
+    //
+    var result = reverser.Reverse(input);
+    //
+    Assert.True(result == expected);
+}
+
+[Fact]
+public void Reverse_Success()
+{
+	var input = "text";
+	var expected = "txet";
+    var reverser = new StringReverser();
+    //
+    var result = reverser.Reverse(input);
+    //
+    Assert.True(result == expected);
+}
+</div>
+
+<div class="article-body-div">
+    <p>
+        
+Обращаем внимание на атрибуты Test/Fact, именно по ним система узнает, что это тест, без них этот код просто не будет
+исполнен. </p>
+ <p>Весь метод делится на три части: подготовка данных, вызов тестируемого метода, проверка результата. Мне представляется
+что код в данном случае говорит сам за себя, но... вкратце пройдемся по происходящему.
+Поскольку мы хотим проверить работу метода Reverse в StringReverser, нам, очевидно, нужен экземпляр
+этого класса. Нужна строка на которой мы будем проверять метод (input) и определение того, что мы ожидаем
+увидеть в результате (expected).</p>
+Assert... Assert.True проверяет, что переданное выражение (result == expected) является true, иначе выбрасывает
+исключение и система сообщает нам, что тест не прошел. Проверим?)
+ <p>Если вы являетесь счастливым обладателем Rider или ReSharper, то жмем Ctrl+T,L. В чистом Visual Studio - Ctrl+T,A.
+Можно, конечно, и в менюшках поискать кнопку "Run all tests".</p>
+
+ <p>В результате видим красную полоску - тест не прошел. Что не удивительно - функционал метода Reverse не был
+реализован и он всегда возвращает пустую строку. Предпочту оставить реализацию корректного функционала на
+совести читателя) Добиваемся прохождения теста и двигаемся дальше, впереди параметризированные тесты!
+    </p>
+</div>
+
+
+
+
+
+

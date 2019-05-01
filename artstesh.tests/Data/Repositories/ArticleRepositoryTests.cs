@@ -4,9 +4,8 @@ using artstesh.data.DbContext;
 using artstesh.data.Entities;
 using artstesh.data.Repositories;
 using artstesh.tests.FakeFactories;
-using Microsoft.EntityFrameworkCore;
+using SemanticComparison.Fluent;
 using Xunit;
-using Xunit.Sdk;
 
 namespace artstesh.tests.Data.Repositories
 {
@@ -30,7 +29,7 @@ namespace artstesh.tests.Data.Repositories
             var result = await _repository.Get();
             //
             var expected = result.First(e => e.Text == article.Text);
-            Assert.True(expected.Equals(article));
+            Assert.True(expected.AsSource().OfLikeness<Article>().Equals(article));
         }
 
         [Theory, AutoMoqData]
@@ -40,7 +39,7 @@ namespace artstesh.tests.Data.Repositories
             //
             var expected = _context.Articles.First(e => e.Text == article.Text);
             Assert.True(result == expected.Id);
-            Assert.True(expected.Equals(article));
+            Assert.True(expected.AsSource().OfLikeness<Article>().Equals(article));
         }
 
         [Theory, AutoMoqData]
@@ -53,7 +52,8 @@ namespace artstesh.tests.Data.Repositories
             await _repository.Update(updated);
             //
             var expected = _context.Articles.First(e => e.Id == article.Id);
-            Assert.True(expected.Equals(updated));
+            var source = expected.AsSource().OfLikeness<Article>().Without(e => e.Created);
+            Assert.True(source.Equals(updated));
         }
 
         [Theory, AutoMoqData]

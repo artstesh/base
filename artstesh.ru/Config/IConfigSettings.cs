@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace C2c.Config
+﻿namespace C2c.Config
 {
     public interface IConfigSettings
     {
