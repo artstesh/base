@@ -14,6 +14,7 @@ namespace artstesh.data.DbContext
 
         public DbSet<Article> Articles { get; set; }
         public DbSet<Subscribe> Subscribes { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

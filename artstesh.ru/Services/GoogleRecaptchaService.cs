@@ -11,8 +11,8 @@ namespace artstesh.ru.Services
 {
     public class GoogleRecaptchaService : IGoogleRecaptchaService
     {
-        private readonly IConfigSettings _settings;
         private readonly HttpClient _httpClient;
+        private readonly IConfigSettings _settings;
 
         public GoogleRecaptchaService(IConfigSettings settings)
         {

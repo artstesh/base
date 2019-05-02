@@ -11,7 +11,7 @@ namespace artstesh.tests.FakeFactories
             var serviceProvider = new ServiceCollection()
                 .AddEntityFrameworkInMemoryDatabase()
                 .BuildServiceProvider();
-            
+
             var builder = new DbContextOptionsBuilder<DataContext>();
             builder.UseInMemoryDatabase()
                 .UseInternalServiceProvider(serviceProvider);

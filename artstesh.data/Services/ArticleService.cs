@@ -19,7 +19,6 @@ namespace artstesh.data.Services
 
         public async Task<List<ArticleModel>> Get()
         {
-            
             var articles = await _repository.Get();
             return articles.Select(e => e.ToModel()).ToList();
         }

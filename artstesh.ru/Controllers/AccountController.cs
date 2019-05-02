@@ -12,8 +12,8 @@ namespace QuizWeb.Controllers.WebControllers
 {
     public class AccountController : Controller
     {
-        private readonly IConfigSettings _settings;
         private readonly IGoogleRecaptchaService _googleRecaptchaService;
+        private readonly IConfigSettings _settings;
 
         public AccountController(IConfigSettings settings, IGoogleRecaptchaService googleRecaptchaService)
         {
@@ -36,10 +36,11 @@ namespace QuizWeb.Controllers.WebControllers
             var captchaResponse = await _googleRecaptchaService.Validate(Request.Form);
             if (!captchaResponse.Success)
             {
-                ModelState.AddModelError("reCaptchaError", 
+                ModelState.AddModelError("reCaptchaError",
                     "Есть мнение, что Вы робот... повторим?");
                 return View(model);
             }
+
             if (!_settings.CheckPassword(model.Login, model.Password))
                 return View(new LoginModel());
             await Authenticate(model.Login);

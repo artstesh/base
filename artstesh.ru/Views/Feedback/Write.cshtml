@@ -1,0 +1,70 @@
+@model FeedbackViewModel
+
+@{
+    ViewBag.Title = "Пообщаемся?)";
+}
+<h1></h1>
+<div class="article-body-div">
+    <p>
+        Здесь вы можете рассказать мне насколько я не прав (я постараюсь исправиться) или выразить благодарность(я буду очень рад), предложить идеи по улучшению сайта,
+        спросить совета, рассказать о своем проекте(если хотите, чтобы я в нем поучаствовал) или просто предложить познакомиться. Я постараюсь ответить как можно скорее! 
+    </p>
+</div>
+<div class="sub-form-div">
+    @using (Html.BeginForm("Write", "Feedback", FormMethod.Post))
+    {
+        @Html.HiddenFor(m => m.GoogleKey)
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FeedbackModel.Name, new {htmlAttributes = new {@class = "form-control", placeholder = "Как к Вам обращаться?"}})
+                @Html.ValidationMessageFor(model => model.FeedbackModel.Name, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.FeedbackModel.Email, new {htmlAttributes = new {@class = "form-control", type = "email", placeholder = "e-mail"}})
+                @Html.ValidationMessageFor(model => model.FeedbackModel.Email, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                <textarea asp-for="FeedbackModel.Message" class = "form-control"></textarea>
+                @Html.ValidationMessageFor(model => model.FeedbackModel.Message, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="captcha">
+            <div class="g-recaptcha" data-sitekey="@Model.GoogleKey"></div>
+            @Html.ValidationMessage("ReCaptchaError", new {@class = "text-danger"})
+        </div>
+
+        <div class="form-group">
+            <div class="sub-form-submit">
+                <input type="submit" value="Отправить" class="btn btn-default"/>
+            </div>
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+    window.onload = function() {
+        var $recaptcha = document.querySelector('#g-recaptcha-response');
+        if ($recaptcha) {
+            $recaptcha.setAttribute("required", "required");
+        };
+        </script>
+    }
+
+    <style>
+        #g-recaptcha-response {
+            display: block !important;
+            height: 76px !important;
+            margin: -78px 0 0 0 !important;
+            opacity: 0;
+            position: absolute;
+            width: 302px !important;
+            z-index: -999999;
+        }
+    </style>

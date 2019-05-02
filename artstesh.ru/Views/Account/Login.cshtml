@@ -36,7 +36,7 @@
                 </div>
                 <div>}</div>
                 <div class="g-recaptcha" data-sitekey="@Model.GoogleKey"></div>
-                @Html.ValidationMessage("ReCaptchaError", new { @class = "text-danger" })
+                @Html.ValidationMessage("ReCaptchaError", new {@class = "text-danger"})
             }
         </div>
 
@@ -52,87 +52,87 @@
 @section Scripts {
     <script src="https://www.google.com/recaptcha/api.js"></script>
     <script>
-    window.onload = function () {
+    window.onload = function() {
         var $recaptcha = document.querySelector('#g-recaptcha-response');
         if ($recaptcha) {
             $recaptcha.setAttribute("required", "required");
         };
-    </script>
-}
-
-<style>
-    #g-recaptcha-response {
-        display: block !important;
-        position: absolute;
-        margin: -78px 0 0 0 !important;
-        width: 302px !important;
-        height: 76px !important;
-        z-index: -999999;
-        opacity: 0;
-    }
-    
-    .tab-div { padding-left: 20px; }
-
-    .object-name-text { color: #1351ee !important; }
-
-    .string-text { color: #c97708 !important; }
-
-    .login-form {
-        background-color: azure;
-        display: table;
-        margin: 0 auto;
-        min-height: 350px;
-        padding-top: 30px;
-        width: 35%;
+        </script>
     }
 
-    .login-form input {
-        background-color: white !important;
-        border-radius: 5px;
-        color: #c97708 !important;
-    }
+    <style>
+        #g-recaptcha-response {
+            display: block !important;
+            height: 76px !important;
+            margin: -78px 0 0 0 !important;
+            opacity: 0;
+            position: absolute;
+            width: 302px !important;
+            z-index: -999999;
+        }
 
-    .login-form .button-div { padding-left: 80%; }
+        .tab-div { padding-left: 20px; }
 
-    .tabs {
-        background: floralwhite;
-        border: 0;
-        border: 2px solid gainsboro;
-        height: 100%;
-        margin: 0 auto;
-        padding: 3px;
-        width: 100%;
-    }
+        .object-name-text { color: #1351ee !important; }
 
-    .tabs > input { display: none; }
+        .string-text { color: #c97708 !important; }
 
-    .tabs > div {
-        background: transparent;
-        border-top: 2px solid gainsboro;
-        display: none;
-        padding: 12px;
-        padding-left: 25px;
-    }
+        .login-form {
+            background-color: azure;
+            display: table;
+            margin: 0 auto;
+            min-height: 350px;
+            padding-top: 30px;
+            width: 35%;
+        }
 
-    .tabs > label {
-        background: transparent;
-        border-left: 0;
-        color: #666666;
-        cursor: pointer;
-        display: inline-block;
-        font-weight: normal !important;
-        margin: 0 -5px -1px 0;
-        padding: 7px;
-        text-align: center;
-        width: 30%;
-    }
+        .login-form input {
+            background-color: white !important;
+            border-radius: 5px;
+            color: #c97708 !important;
+        }
 
-    .tabs > input:checked + label {
-        background: #2d25bf;
-        border: 1px solid #C0C0C0;
-        color: white;
-    }
+        .login-form .button-div { padding-left: 80%; }
 
-    #tab_1:checked ~ #txt_1,
-    #tab_2:checked ~ #txt_2 { display: block; }
-</style>
+        .tabs {
+            background: floralwhite;
+            border: 0;
+            border: 2px solid gainsboro;
+            height: 100%;
+            margin: 0 auto;
+            padding: 3px;
+            width: 100%;
+        }
+
+        .tabs > input { display: none; }
+
+        .tabs > div {
+            background: transparent;
+            border-top: 2px solid gainsboro;
+            display: none;
+            padding: 12px;
+            padding-left: 25px;
+        }
+
+        .tabs > label {
+            background: transparent;
+            border-left: 0;
+            color: #666666;
+            cursor: pointer;
+            display: inline-block;
+            font-weight: normal !important;
+            margin: 0 -5px -1px 0;
+            padding: 7px;
+            text-align: center;
+            width: 30%;
+        }
+
+        .tabs > input:checked + label {
+            background: #2d25bf;
+            border: 1px solid #C0C0C0;
+            color: white;
+        }
+
+        #tab_1:checked ~ #txt_1,
+        #tab_2:checked ~ #txt_2 { display: block; }
+    </style>

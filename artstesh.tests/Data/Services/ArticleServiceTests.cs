@@ -18,7 +18,7 @@ namespace artstesh.tests.Data.Services
     public class ArticleServiceTests
     {
         private readonly Mock<IArticleRepository> _repository;
-        private ArticleService _service;
+        private readonly ArticleService _service;
 
         public ArticleServiceTests()
         {
@@ -26,7 +26,8 @@ namespace artstesh.tests.Data.Services
             _service = new ArticleService(_repository.Object);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Get_Success(Article article)
         {
             article.Text = StringCompressor.CompressString(article.Text);
@@ -40,7 +41,8 @@ namespace artstesh.tests.Data.Services
             Assert.True(source.Equals(result.First()));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Get_By_Id_Success(Article article)
         {
             article.Text = StringCompressor.CompressString(article.Text);
@@ -52,7 +54,8 @@ namespace artstesh.tests.Data.Services
             Assert.True(source.Equals(result));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Delete_Success(int id, bool expected)
         {
             _repository.Setup(e => e.Delete(id)).ReturnsAsync(expected);
@@ -62,7 +65,8 @@ namespace artstesh.tests.Data.Services
             Assert.True(result == expected);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Update_Success(ArticleModel model, bool expected)
         {
             _repository.Setup(e => e.Update(It.IsAny<Article>())).ReturnsAsync(expected);
@@ -71,8 +75,9 @@ namespace artstesh.tests.Data.Services
             //
             Assert.True(result == expected);
         }
-        
-        [Theory, AutoMoqData]
+
+        [Theory]
+        [AutoMoqData]
         public async Task Create_Success(ArticleModel model, int expectedId)
         {
             _repository.Setup(e => e.Create(It.IsAny<Article>())).ReturnsAsync(expectedId);

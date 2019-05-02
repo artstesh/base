@@ -6,14 +6,14 @@ namespace Student.RemoteAgents
 {
     public class MailAgent : IMailAgent
     {
-        private IConfigSettings _settings;
+        private readonly IConfigSettings _settings;
 
         public MailAgent(IConfigSettings settings)
         {
             _settings = settings;
         }
 
-        public string SendMail(string mailto, string caption,string message, string attachFile = null)
+        public string SendMail(string mailto, string caption, string message, string attachFile = null)
         {
             var from = _settings.ApplicationKeys.MailFrom;
             var smtpServer = _settings.ApplicationKeys.MailServer;

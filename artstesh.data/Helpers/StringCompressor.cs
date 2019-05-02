@@ -12,7 +12,9 @@ namespace artstesh.data.Helpers
             var buffer = Encoding.UTF8.GetBytes(text);
             var memoryStream = new MemoryStream();
             using (var gZipStream = new GZipStream(memoryStream, CompressionMode.Compress, true))
+            {
                 gZipStream.Write(buffer, 0, buffer.Length);
+            }
 
             memoryStream.Position = 0;
 
@@ -24,7 +26,7 @@ namespace artstesh.data.Helpers
             Buffer.BlockCopy(BitConverter.GetBytes(buffer.Length), 0, gZipBuffer, 0, 4);
             return Convert.ToBase64String(gZipBuffer);
         }
-        
+
         public static string DecompressString(string compressedText)
         {
             var gZipBuffer = Convert.FromBase64String(compressedText);
@@ -40,6 +42,7 @@ namespace artstesh.data.Helpers
                 {
                     gZipStream.Read(buffer, 0, buffer.Length);
                 }
+
                 return Encoding.UTF8.GetString(buffer);
             }
         }

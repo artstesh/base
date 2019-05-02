@@ -4,17 +4,15 @@ using QuizWeb.Data.Entities;
 
 namespace artstesh.data.Entities
 {
-    [Table("subscribe")]
-    public class Subscribe : BaseEntity
+    [Table("feedback")]
+    public class Feedback : BaseEntity
     {
         [Column("Email")] public string Email { get; set; }
 
-        [Column("BeginDate")] public DateTime BeginDate { get; set; }
-
-        [Column("IsActive")] public bool IsActive { get; set; }
+        [Column("Created")] public DateTime Created { get; set; }
 
         [Column("Name")] public string Name { get; set; }
 
-        [Column("Secret")] public string Secret { get; set; }
+        [Column("Message")] public string Message { get; set; }
     }
 }

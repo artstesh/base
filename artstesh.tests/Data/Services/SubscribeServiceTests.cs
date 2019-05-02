@@ -16,8 +16,8 @@ namespace artstesh.tests.Data.Services
 {
     public class SubscribeServiceTests
     {
-        private SubscribeService _service;
         private readonly Mock<ISubscribeRepository> _repository;
+        private readonly SubscribeService _service;
 
         public SubscribeServiceTests()
         {
@@ -25,7 +25,8 @@ namespace artstesh.tests.Data.Services
             _service = new SubscribeService(_repository.Object);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Add(SubscribeModel model, int expectedId)
         {
             model.IsActive = false;
@@ -36,11 +37,12 @@ namespace artstesh.tests.Data.Services
             //
             Assert.True(result == expectedId);
             _repository.Verify(t => t.Add(It.Is<Subscribe>(e => e.BeginDate.Date == DateTime.Now.Date)));
-            _repository.Verify(t => t.Add(It.Is<Subscribe>(e => e.IsActive == true)));
+            _repository.Verify(t => t.Add(It.Is<Subscribe>(e => e.IsActive)));
             _repository.Verify(t => t.Add(It.Is<Subscribe>(e => !string.IsNullOrWhiteSpace(e.Secret))));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Get_Success(Subscribe entity)
         {
             var list = new List<Subscribe> {entity};
@@ -53,7 +55,8 @@ namespace artstesh.tests.Data.Services
             Assert.True(source.Equals(result.First()));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Unsubscribe_Success(string secret, bool expected)
         {
             _repository.Setup(e => e.Unsubscribe(secret)).ReturnsAsync(expected);
@@ -61,6 +64,6 @@ namespace artstesh.tests.Data.Services
             var result = await _service.Unsubscribe(secret);
             //
             Assert.True(result == expected);
-        }    
+        }
     }
 }

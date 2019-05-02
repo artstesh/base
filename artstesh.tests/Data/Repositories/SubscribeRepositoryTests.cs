@@ -20,7 +20,8 @@ namespace artstesh.tests.Data.Repositories
             _repository = new SubscribeRepository(_context);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Add_Success(Subscribe subscribe)
         {
             var result = await _repository.Add(subscribe);
@@ -31,7 +32,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.True(result.Equals(subscribe.Id));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Add_Already_Exists(Subscribe subscribe)
         {
             subscribe.IsActive = false;
@@ -46,7 +48,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.True(result == subscribe.Id);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Get_Success(Subscribe subscribe)
         {
             subscribe.IsActive = true;
@@ -59,7 +62,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.True(source.Equals(subscribe));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Get_Only_Active(Subscribe subscribe)
         {
             subscribe.IsActive = false;
@@ -71,7 +75,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.True(result.Count == 0);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Unsubscribe_Success(Subscribe subscribe)
         {
             subscribe.IsActive = true;
@@ -84,7 +89,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.False(subscribe.IsActive);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Unsubscribe_No_Such_Entity(string secret)
         {
             var result = await _repository.Unsubscribe(secret);

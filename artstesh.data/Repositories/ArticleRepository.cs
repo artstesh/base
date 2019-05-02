@@ -23,7 +23,7 @@ namespace artstesh.data.Repositories
 
         public async Task<int> Create(Article article)
         {
-            await  _context.AddAsync(article);
+            await _context.AddAsync(article);
             await _context.SaveChangesAsync();
             return article.Id;
         }

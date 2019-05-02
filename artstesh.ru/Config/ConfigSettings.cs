@@ -17,6 +17,7 @@ namespace C2c.Config
 
         public string ConnectionString { get; set; }
         public ApplicationKeys ApplicationKeys { get; set; }
+
         public bool CheckPassword(string login, string password)
         {
             return login.Equals(ApplicationKeys.Login) && password.Equals(ApplicationKeys.Password);

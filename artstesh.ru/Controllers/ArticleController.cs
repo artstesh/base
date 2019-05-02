@@ -22,12 +22,14 @@ namespace artstesh.ru.Controllers
             var models = await _articleCacheService.Get();
             return View(models);
         }
+
         [Authorize]
         // GET: Article/Create
         public ActionResult Create()
         {
             return View(new ArticleModel());
         }
+
         [Authorize]
         // POST: Article/Create
         [HttpPost]
@@ -36,15 +38,17 @@ namespace artstesh.ru.Controllers
         {
             try
             {
-                if((await _articleCacheService.Create(model)) > 0)
-                return RedirectToAction(nameof(Index));
+                if (await _articleCacheService.Create(model) > 0)
+                    return RedirectToAction(nameof(Index));
             }
             catch
             {
                 //ignored
             }
+
             return View(model);
         }
+
         [Authorize]
         // GET: Article/Edit/5
         public async Task<ActionResult> Edit(int id)
@@ -52,6 +56,7 @@ namespace artstesh.ru.Controllers
             var model = await _articleCacheService.GetCached(id);
             return View(model);
         }
+
         [Authorize]
         // POST: Article/Edit/5
         [HttpPost]
@@ -67,6 +72,7 @@ namespace artstesh.ru.Controllers
             {
                 //ignored
             }
+
             return View(model);
         }
     }

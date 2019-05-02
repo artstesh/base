@@ -8,14 +8,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace artstesh.ru.Controllers
 {
-    public class SubController : Controller
+    public class FeedbackController : Controller
     {
         private readonly IGoogleRecaptchaService _googleRecaptchaService;
-        private readonly ISubscribeService _service;
+        private readonly IFeedbackService _service;
         private readonly IConfigSettings _settings;
 
-        public SubController(IConfigSettings settings, IGoogleRecaptchaService googleRecaptchaService,
-            ISubscribeService service)
+        public FeedbackController(IConfigSettings settings, IGoogleRecaptchaService googleRecaptchaService,
+            IFeedbackService service)
         {
             _settings = settings;
             _googleRecaptchaService = googleRecaptchaService;
@@ -23,16 +23,16 @@ namespace artstesh.ru.Controllers
         }
 
         [HttpGet]
-        public IActionResult Sub()
+        public IActionResult Write()
         {
-            var model = new SubViewModel();
+            var model = new FeedbackViewModel();
             model.GoogleKey = _settings.ApplicationKeys.GoogleKey;
-            model.SubscribeModel = new SubscribeModel();
+            model.FeedbackModel = new FeedbackModel();
             return View(model);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Sub(SubViewModel model)
+        public async Task<IActionResult> Write(FeedbackViewModel model)
         {
             var captchaResponse = await _googleRecaptchaService.Validate(Request.Form);
             if (!captchaResponse.Success)
@@ -43,15 +43,15 @@ namespace artstesh.ru.Controllers
                 return View(model);
             }
 
-            await _service.Add(model.SubscribeModel);
+            var result = await _service.Add(model.FeedbackModel);
+            if (!result)
+            {
+                ModelState.AddModelError("reCaptchaError",
+                    "Мне стыдно в этом признаться, но кажется что-то сломалось :( Может быть попробовать еще раз?");
+                model.GoogleKey = _settings.ApplicationKeys.GoogleKey;
+                return View(model);
+            }
             return RedirectToAction("Success");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> UnSub(string secret)
-        {
-            await _service.Unsubscribe(secret);
-            return View();
         }
 
         [HttpGet]

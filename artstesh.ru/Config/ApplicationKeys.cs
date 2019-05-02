@@ -1,6 +1,4 @@
-﻿
-
-namespace C2c.Config
+﻿namespace C2c.Config
 {
     public class ApplicationKeys
     {

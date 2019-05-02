@@ -27,12 +27,11 @@ namespace C2c.Helper
             await _cache.RemoveAsync(key);
         }
 
-        public async Task Set(string key, object obj, int cacheLifeTime =-1)
+        public async Task Set(string key, object obj, int cacheLifeTime = -1)
         {
             if (cacheLifeTime == -1) cacheLifeTime = _settings.ApplicationKeys.CacheLifeTime;
             await _cache.SetAsync(key, ObjectByteConverter.ObjectToByteArray(obj),
-                new DistributedCacheEntryOptions()
-                    {AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(cacheLifeTime)});
+                new DistributedCacheEntryOptions {AbsoluteExpiration = DateTimeOffset.Now.AddMinutes(cacheLifeTime)});
         }
     }
 }

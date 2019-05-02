@@ -19,8 +19,9 @@ namespace artstesh.tests.Data.Repositories
             _context = ContextFactory.GetContext();
             _repository = new ArticleRepository(_context);
         }
-        
-        [Theory, AutoMoqData]
+
+        [Theory]
+        [AutoMoqData]
         public async Task Get(Article article)
         {
             _context.Add(article);
@@ -32,7 +33,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.True(expected.AsSource().OfLikeness<Article>().Equals(article));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Create(Article article)
         {
             var result = await _repository.Create(article);
@@ -42,7 +44,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.True(expected.AsSource().OfLikeness<Article>().Equals(article));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Update(Article article, Article updated)
         {
             _context.Articles.Add(article);
@@ -56,7 +59,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.True(source.Equals(updated));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Update_No_Such_Id(Article article)
         {
             var result = await _repository.Update(article);
@@ -66,7 +70,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.Null(expected);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Delete(Article article)
         {
             _context.Articles.Add(article);
@@ -78,7 +83,8 @@ namespace artstesh.tests.Data.Repositories
             Assert.Null(expectedNull);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Delete_No_Such_Id(int id)
         {
             var result = await _repository.Delete(id);

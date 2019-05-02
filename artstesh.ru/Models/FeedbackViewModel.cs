@@ -2,9 +2,9 @@ using artstesh.data.Models;
 
 namespace artstesh.ru.Models
 {
-    public class SubViewModel
+    public class FeedbackViewModel
     {
-        public SubscribeModel SubscribeModel { get; set; }
+        public FeedbackModel FeedbackModel { get; set; }
         public string GoogleKey { get; set; }
     }
 }

@@ -11,15 +11,18 @@ namespace artstesh.data.Converters
             if (article == null) return null;
             return new ArticleModel
             {
-                Created = article.Created, Id = article.Id, Text = StringCompressor.DecompressString(article.Text), Preview = article.Preview, Title = article.Title
+                Created = article.Created, Id = article.Id, Text = StringCompressor.DecompressString(article.Text),
+                Preview = article.Preview, Title = article.Title
             };
         }
+
         public static Article FromModel(this ArticleModel article)
         {
             if (article == null) return null;
             return new Article
             {
-                Created = article.Created, Id = article.Id, Text = StringCompressor.CompressString(article.Text), Preview = article.Preview, Title = article.Title
+                Created = article.Created, Id = article.Id, Text = StringCompressor.CompressString(article.Text),
+                Preview = article.Preview, Title = article.Title
             };
         }
     }

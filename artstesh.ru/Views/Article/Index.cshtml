@@ -11,21 +11,22 @@
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                Title
-            </th>
-            <th>
-                Created
-            </th>
-            <th>
-                Id
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            Title
+        </th>
+        <th>
+            Created
+        </th>
+        <th>
+            Id
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+    @foreach (var item in Model)
+    {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Title)
@@ -37,9 +38,9 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new {  id=item.Id  })
+                @Html.ActionLink("Edit", "Edit", new {id = item.Id})
             </td>
         </tr>
-}
+    }
     </tbody>
 </table>

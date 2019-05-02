@@ -6,7 +6,8 @@ namespace artstesh.tests.Data
 {
     public class StringCompressorTests
     {
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public void Compress_Success(string text)
         {
             var compressed = StringCompressor.CompressString(text);
@@ -14,8 +15,9 @@ namespace artstesh.tests.Data
             //
             Assert.True(text == decompressed);
         }
-        
-        [Theory, AutoMoqData]
+
+        [Theory]
+        [AutoMoqData]
         public void Compress_Compressed(string text)
         {
             var compressed = StringCompressor.CompressString(text);

@@ -15,7 +15,7 @@ namespace artstesh.data.Repositories
         {
             _context = context;
         }
-        
+
         public async Task<int> Add(Subscribe subscribe)
         {
             var sub = await _context.Subscribes.FirstOrDefaultAsync(e => e.Email.Equals(subscribe.Email));
@@ -36,7 +36,7 @@ namespace artstesh.data.Repositories
         public async Task<bool> Unsubscribe(string secret)
         {
             var sub = await _context.Subscribes.FirstOrDefaultAsync(e => e.Secret.Equals(secret));
-            if(sub == null)
+            if (sub == null)
                 return false;
             sub.IsActive = false;
             await _context.SaveChangesAsync();

@@ -260,6 +260,6 @@ paket-files/
 __pycache__/
 *.pyc
 
-*/artstesh.ru/appsettings.json
-*/artstesh.ru/Web.config
-*/artstesh.ru\Properties\PublishProfiles/*
+*/appsettings.json
+*/Web.config
+*/Properties/PublishProfiles/*

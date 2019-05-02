@@ -59,6 +59,8 @@ namespace artstesh.ru
             services.AddSingleton<IMailAgent, MailAgent>();
             services.AddScoped<ISubscribeService, SubscribeService>();
             services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+            services.AddScoped<IFeedbackService, FeedbackService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -83,8 +85,8 @@ namespace artstesh.ru
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Reading}/{action=Index}/{id?}");
+                    "default",
+                    "{controller=Reading}/{action=Index}/{id?}");
             });
             var cacheEntryOptions = new DistributedCacheEntryOptions()
                 .SetAbsoluteExpiration(

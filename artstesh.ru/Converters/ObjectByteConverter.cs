@@ -6,13 +6,13 @@ namespace C2c.Services.Converters
 {
     public class ObjectByteConverter
     {
-        public static byte[] ObjectToByteArray(Object obj)
+        public static byte[] ObjectToByteArray(object obj)
         {
             if (obj == null)
                 return null;
 
-            BinaryFormatter bf = new BinaryFormatter();
-            using (MemoryStream ms = new MemoryStream())
+            var bf = new BinaryFormatter();
+            using (var ms = new MemoryStream())
             {
                 bf.Serialize(ms, obj);
 
@@ -20,16 +20,16 @@ namespace C2c.Services.Converters
             }
         }
 
-        public static T ByteArrayToObject<T>(byte[] arrBytes) 
+        public static T ByteArrayToObject<T>(byte[] arrBytes)
         {
             try
             {
-                using (MemoryStream memStream = new MemoryStream())
+                using (var memStream = new MemoryStream())
                 {
-                    BinaryFormatter binForm = new BinaryFormatter();
+                    var binForm = new BinaryFormatter();
                     memStream.Write(arrBytes, 0, arrBytes.Length);
                     memStream.Seek(0, SeekOrigin.Begin);
-                    return (T)binForm.Deserialize(memStream);
+                    return (T) binForm.Deserialize(memStream);
                 }
             }
             catch (Exception)

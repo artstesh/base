@@ -1,11 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using artstesh.data.Converters;
-using artstesh.data.Entities;
 using artstesh.data.Helpers;
 using artstesh.data.Models;
-using artstesh.data.Repositories;
 using artstesh.data.Services;
 using artstesh.ru.Services;
 using artstesh.tests.FakeFactories;
@@ -19,9 +16,9 @@ namespace artstesh.tests.Web.Services
 {
     public class ArticleServiceTests
     {
-        private readonly Mock<IArticleService> _repository;
         private readonly Mock<ICacheHelper> _cache;
         private readonly ArticleCacheCacheService _cacheCacheService;
+        private readonly Mock<IArticleService> _repository;
 
         public ArticleServiceTests()
         {
@@ -29,8 +26,9 @@ namespace artstesh.tests.Web.Services
             _repository = new Mock<IArticleService>(MockBehavior.Strict);
             _cacheCacheService = new ArticleCacheCacheService(_repository.Object, _cache.Object);
         }
-        
-        [Theory, AutoMoqData]
+
+        [Theory]
+        [AutoMoqData]
         public async Task Get(ArticleModel article)
         {
             article.Text = StringCompressor.CompressString(article.Text);
@@ -44,7 +42,8 @@ namespace artstesh.tests.Web.Services
             Assert.True(source.Equals(expected));
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Create(ArticleModel article, int expected)
         {
             _repository.Setup(e => e.Create(It.IsAny<ArticleModel>())).ReturnsAsync(expected);
@@ -55,11 +54,12 @@ namespace artstesh.tests.Web.Services
             _repository.Verify(e => e.Create(It.IsAny<ArticleModel>()), Times.Once);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Update(ArticleModel model, bool expected)
         {
             _repository.Setup(e => e.Update(It.IsAny<ArticleModel>())).ReturnsAsync(expected);
-            _cache.Setup(e => e.Remove("article_"+model.Id)).Returns(Task.Run(() => { }));
+            _cache.Setup(e => e.Remove("article_" + model.Id)).Returns(Task.Run(() => { }));
             //
             var result = await _cacheCacheService.Update(model);
             //
@@ -67,23 +67,25 @@ namespace artstesh.tests.Web.Services
             _repository.Verify(e => e.Update(It.IsAny<ArticleModel>()), Times.Once);
         }
 
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public async Task Delete(int id, bool expected)
         {
             _repository.Setup(e => e.Delete(id)).ReturnsAsync(expected);
-            _cache.Setup(e => e.Remove("article_"+id)).Returns(Task.Run(() => { }));
+            _cache.Setup(e => e.Remove("article_" + id)).Returns(Task.Run(() => { }));
             //
             var result = await _cacheCacheService.Delete(id);
             //
             Assert.True(result == expected);
             _repository.Verify(e => e.Delete(id), Times.Once);
         }
+
         [Theory]
         [AutoMoqData]
         public async Task GetSdItems_With_Cache(ArticleModel article)
         {
             var bytes = ObjectByteConverter.ObjectToByteArray(article);
-            _cache.Setup(e => e.Get("article_"+article.Id)).ReturnsAsync(bytes);
+            _cache.Setup(e => e.Get("article_" + article.Id)).ReturnsAsync(bytes);
             //
             var result = await _cacheCacheService.GetCached(article.Id);
             //
@@ -97,9 +99,10 @@ namespace artstesh.tests.Web.Services
         {
             article.Text = StringCompressor.CompressString(article.Text);
             //
-            _cache.Setup(e => e.Get("article_"+article.Id)).ReturnsAsync((byte[]) null);
+            _cache.Setup(e => e.Get("article_" + article.Id)).ReturnsAsync((byte[]) null);
             _repository.Setup(e => e.Get(article.Id)).ReturnsAsync(article);
-            _cache.Setup(e => e.Set("article_"+article.Id, It.IsAny<ArticleModel>(), -1)).Returns(Task.Run(() => { }));
+            _cache.Setup(e => e.Set("article_" + article.Id, It.IsAny<ArticleModel>(), -1))
+                .Returns(Task.Run(() => { }));
             //
             var result = await _cacheCacheService.GetCached(article.Id);
             //

@@ -1,10 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using artstesh.data.Converters;
 using artstesh.data.Models;
-using artstesh.data.Repositories;
 using artstesh.data.Services;
 using C2c.Helper;
 using C2c.Services.Converters;
@@ -13,19 +9,19 @@ namespace artstesh.ru.Services
 {
     public class ArticleCacheCacheService : IArticleCacheService
     {
-        private readonly IArticleService _repository;
+        private static readonly string _cacheKey;
         private readonly ICacheHelper _cache;
-        private static string _cacheKey;
+        private readonly IArticleService _repository;
+
+        static ArticleCacheCacheService()
+        {
+            _cacheKey = "article_";
+        }
 
         public ArticleCacheCacheService(IArticleService repository, ICacheHelper cache)
         {
             _repository = repository;
             _cache = cache;
-        }
-
-        static ArticleCacheCacheService()
-        {
-            _cacheKey = "article_";
         }
 
         public async Task<List<ArticleModel>> Get()

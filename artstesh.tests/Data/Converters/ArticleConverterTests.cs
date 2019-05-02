@@ -10,7 +10,8 @@ namespace artstesh.tests.Data.Converters
 {
     public class ArticleConverterTests
     {
-        [Theory, AutoMoqData]
+        [Theory]
+        [AutoMoqData]
         public void ToModel_Success(Article article)
         {
             var text = article.Text;
@@ -18,38 +19,43 @@ namespace artstesh.tests.Data.Converters
             //
             var expected = new ArticleModel
             {
-                Created = article.Created, Id = article.Id, Text = text, Preview = article.Preview, Title = article.Title
+                Created = article.Created, Id = article.Id, Text = text, Preview = article.Preview,
+                Title = article.Title
             };
             //
             var model = article.ToModel().AsSource().OfLikeness<ArticleModel>();
             //
             Assert.True(model.Equals(expected));
         }
-        
-        [Fact, AutoMoqData]
-        public void ToModel_Null()
-        {
-            var result = ((Article) null).ToModel();
-            Assert.Null(result);
-        }
-        
-        [Theory, AutoMoqData]
+
+        [Theory]
+        [AutoMoqData]
         public void FromModel_Success(ArticleModel article)
         {
             var expected = new Article
             {
-                Created = article.Created, Id = article.Id, Text = StringCompressor.CompressString(article.Text), Preview = article.Preview, Title = article.Title
+                Created = article.Created, Id = article.Id, Text = StringCompressor.CompressString(article.Text),
+                Preview = article.Preview, Title = article.Title
             };
             //
             var model = article.FromModel().AsSource().OfLikeness<Article>();
             //
             Assert.True(model.Equals(expected));
         }
-        
-        [Fact, AutoMoqData]
+
+        [Fact]
+        [AutoMoqData]
         public void FromModel_Null()
         {
             var result = ((ArticleModel) null).FromModel();
+            Assert.Null(result);
+        }
+
+        [Fact]
+        [AutoMoqData]
+        public void ToModel_Null()
+        {
+            var result = ((Article) null).ToModel();
             Assert.Null(result);
         }
     }
