@@ -1,0 +1,63 @@
+@model SubViewModel
+
+@{
+    ViewBag.Title = "Добро пожаловать!";
+}
+<h1></h1>
+<div class="article-body-div">
+    <p>Заполнив мини-форму внизу и подписавшись на обновления сайта, ты покажешь автору, что опубликованные здесь
+        материалы интересны тебе и мотивируешь писать чаще)</p>
+    <p>Я же со своей стороны торжественно обещаю не спамить и рассылать только информацию об обновлениях на этом сайте</p>
+</div>
+<div class="sub-form-div">
+    @using (Html.BeginForm("Sub", "Sub", FormMethod.Post))
+    {
+        @Html.HiddenFor(m => m.GoogleKey)
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SubscribeModel.Name, new {htmlAttributes = new {@class = "form-control", placeholder="Как к Вам обращаться?"}})
+                @Html.ValidationMessageFor(model => model.SubscribeModel.Name, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.SubscribeModel.Email, new {htmlAttributes = new {@class = "form-control", type="email", placeholder="e-mail"}})
+                @Html.ValidationMessageFor(model => model.SubscribeModel.Email, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="captcha">
+    <div class="g-recaptcha" data-sitekey="@Model.GoogleKey"></div>
+            @Html.ValidationMessage("ReCaptchaError", new { @class = "text-danger" })
+</div>
+
+        <div class="form-group">
+            <div class="sub-form-submit">
+                <input type="submit" value="Подписаться" class="btn btn-default"/>
+            </div>
+        </div>
+    }
+</div>
+
+
+@section Scripts {
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    <script>
+    window.onload = function () {
+        var $recaptcha = document.querySelector('#g-recaptcha-response');
+        if ($recaptcha) {
+            $recaptcha.setAttribute("required", "required");
+        };
+        </script>
+    }
+
+    <style>
+        #g-recaptcha-response {
+            display: block !important;
+            position: absolute;
+            margin: -78px 0 0 0 !important;
+            width: 302px !important;
+            height: 76px !important;
+            z-index: -999999;
+            opacity: 0;
+        }
+    </style>

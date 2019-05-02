@@ -9,17 +9,17 @@ namespace artstesh.ru.Controllers
     [Authorize]
     public class ArticleController : Controller
     {
-        private readonly IArticleService _articleService;
+        private readonly IArticleCacheService _articleCacheService;
 
-        public ArticleController(IArticleService articleService)
+        public ArticleController(IArticleCacheService articleCacheService)
         {
-            _articleService = articleService;
+            _articleCacheService = articleCacheService;
         }
 
         // GET: Article
         public async Task<ActionResult> Index()
         {
-            var models = await _articleService.Get();
+            var models = await _articleCacheService.Get();
             return View(models);
         }
         [Authorize]
@@ -36,7 +36,7 @@ namespace artstesh.ru.Controllers
         {
             try
             {
-                if((await _articleService.Create(model)) > 0)
+                if((await _articleCacheService.Create(model)) > 0)
                 return RedirectToAction(nameof(Index));
             }
             catch
@@ -49,7 +49,7 @@ namespace artstesh.ru.Controllers
         // GET: Article/Edit/5
         public async Task<ActionResult> Edit(int id)
         {
-            var model = await _articleService.GetCached(id);
+            var model = await _articleCacheService.GetCached(id);
             return View(model);
         }
         [Authorize]
@@ -60,7 +60,7 @@ namespace artstesh.ru.Controllers
         {
             try
             {
-                if (await _articleService.Update(model))
+                if (await _articleCacheService.Update(model))
                     return RedirectToAction(nameof(Index));
             }
             catch

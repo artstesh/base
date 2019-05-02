@@ -1,6 +1,7 @@
 ﻿using System;
 using artstesh.data.DbContext;
 using artstesh.data.Repositories;
+using artstesh.data.Services;
 using artstesh.ru.Services;
 using C2c.Config;
 using C2c.Helper;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Student.RemoteAgents;
 
 namespace artstesh.ru
 {
@@ -49,11 +51,14 @@ namespace artstesh.ru
                 options.UseMySQL(Configuration.GetConnectionString("DataContext"));
             });
             services.AddScoped<IArticleRepository, ArticleRepository>();
-            services.AddScoped<IArticleService, ArticleService>();
+            services.AddScoped<IArticleCacheService, ArticleCacheCacheService>();
             services.AddSingleton<IConfigSettings, ConfigSettings>();
             services.AddScoped<ICacheHelper, CacheHelper>();
             services.AddSingleton<IGoogleRecaptchaService, GoogleRecaptchaService>();
-            services.AddSingleton<ISubscribeRepository, SubscribeRepository>();
+            services.AddScoped<ISubscribeRepository, SubscribeRepository>();
+            services.AddSingleton<IMailAgent, MailAgent>();
+            services.AddScoped<ISubscribeService, SubscribeService>();
+            services.AddScoped<IArticleService, ArticleService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

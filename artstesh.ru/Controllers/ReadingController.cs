@@ -6,24 +6,24 @@ namespace artstesh.ru.Controllers
 {
     public class ReadingController : Controller
     {
-        private readonly IArticleService _articleService;
+        private readonly IArticleCacheService _articleCacheService;
 
-        public ReadingController(IArticleService articleService)
+        public ReadingController(IArticleCacheService articleCacheService)
         {
-            _articleService = articleService;
+            _articleCacheService = articleCacheService;
         }
 
         // GET: Reading
         public async Task<ActionResult> Index()
         {
-            var models = await _articleService.Get();
+            var models = await _articleCacheService.Get();
             return View(models);
         }
 
         // GET: Reading/Details/5
         public async Task<ActionResult> Details(int id)
         {
-            var model = await _articleService.GetCached(id);
+            var model = await _articleCacheService.GetCached(id);
             return View(model);
         }
     }

@@ -260,5 +260,6 @@ paket-files/
 __pycache__/
 *.pyc
 
-*/QuizWeb/Attributes/BasicAuthorizeFilter.cs
-*/QuizWeb/appsettings.json
+*/artstesh.ru/appsettings.json
+*/artstesh.ru/Web.config
+*/artstesh.ru\Properties\PublishProfiles/*

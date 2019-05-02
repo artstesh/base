@@ -5,32 +5,32 @@ using System.Threading.Tasks;
 using artstesh.data.Converters;
 using artstesh.data.Models;
 using artstesh.data.Repositories;
+using artstesh.data.Services;
 using C2c.Helper;
 using C2c.Services.Converters;
 
 namespace artstesh.ru.Services
 {
-    public class ArticleService : IArticleService
+    public class ArticleCacheCacheService : IArticleCacheService
     {
-        private readonly IArticleRepository _repository;
+        private readonly IArticleService _repository;
         private readonly ICacheHelper _cache;
         private static string _cacheKey;
 
-        public ArticleService(IArticleRepository repository, ICacheHelper cache)
+        public ArticleCacheCacheService(IArticleService repository, ICacheHelper cache)
         {
             _repository = repository;
             _cache = cache;
         }
 
-        static ArticleService()
+        static ArticleCacheCacheService()
         {
             _cacheKey = "article_";
         }
 
         public async Task<List<ArticleModel>> Get()
         {
-            var articles = await _repository.Get();
-            return articles.Select(e => e.ToModel()).ToList();
+            return await _repository.Get();
         }
 
         public async Task<ArticleModel> GetCached(int id)
@@ -40,21 +40,20 @@ namespace artstesh.ru.Services
             if (bytes != null && bytes.Length > 0)
                 article = ObjectByteConverter.ByteArrayToObject<ArticleModel>(bytes);
             if (article != null) return article;
-            article = (await _repository.Get(id)).ToModel();
+            article = await _repository.Get(id);
             await _cache.Set(_cacheKey + id, article);
             return article;
         }
 
         public async Task<int> Create(ArticleModel article)
         {
-            article.Created = DateTime.Now;
-            return await _repository.Create(article.FromModel());
+            return await _repository.Create(article);
         }
 
         public async Task<bool> Update(ArticleModel article)
         {
             await _cache.Remove(_cacheKey + article.Id);
-            return await _repository.Update(article.FromModel());
+            return await _repository.Update(article);
         }
 
         public async Task<bool> Delete(int id)

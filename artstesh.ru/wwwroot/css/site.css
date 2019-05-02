@@ -48,6 +48,23 @@ body {
 .hidden-element {
     display: none !important;
 }
+
+.central-image{
+    text-align: center;
+}
+
+.sub-form-div{
+    width: 100%;
+    padding: 20px 10px;
+    display: inline-block;
+}
+.sub-form-submit{
+    float: right;  
+}
+.sub-form-div .captcha{
+    display: inline-table;
+    padding-left: 15px;
+}
 /************************************************************************/
 
 #logo {
