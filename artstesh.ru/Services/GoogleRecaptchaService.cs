@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using artstesh.data.Helpers;
 using artstesh.ru.Models;
 using C2c.Config;
 using Microsoft.AspNetCore.Http;
@@ -34,7 +35,7 @@ namespace artstesh.ru.Services
             var response = await _httpClient.PostAsync("/recaptcha/api/siteverify", content);
             var resultContent = await response.Content.ReadAsStringAsync();
             var captchaResponse = JsonConvert.DeserializeObject<RecaptchaResponse>(resultContent);
-
+            
             return captchaResponse;
         }
     }

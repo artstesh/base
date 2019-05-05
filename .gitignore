@@ -250,7 +250,7 @@ paket-files/
 .fake/
 
 # JetBrains Rider
-.idea/
+*/.idea/*
 *.sln.iml
 
 # CodeRush
@@ -260,6 +260,6 @@ paket-files/
 __pycache__/
 *.pyc
 
-*/appsettings.json
-*/Web.config
+artstesh.ru/Web.config
+*/Web.*
 */Properties/PublishProfiles/*

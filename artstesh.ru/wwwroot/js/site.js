@@ -8,7 +8,9 @@ function ScrollToAnchor(id) {
     }, 500);
 }
 
-function SwitchTab(id){
-    $('.box-wrap > div').hide();
-    $("#"+id).show();
+function SwitchTab(id, hide){
+    $("#box-"+hide).hide();
+    $("#box-"+id).show();
+    $("#tab-"+hide).removeClass("tab-active");
+    $("#tab-"+id).addClass("tab-active");
 }
