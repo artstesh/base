@@ -1,10 +1,12 @@
 ﻿using System;
+using artstesh.core.Config;
+using artstesh.core.Helpers;
+using artstesh.core.RemoteAgents;
 using artstesh.data.DbContext;
 using artstesh.data.Repositories;
 using artstesh.data.Services;
+using artstesh.ru.Helpers;
 using artstesh.ru.Services;
-using C2c.Config;
-using C2c.Helper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +15,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Student.RemoteAgents;
 
 namespace artstesh.ru
 {
@@ -40,7 +41,7 @@ namespace artstesh.ru
                     options.LoginPath = "/Account/Login";
                     options.LogoutPath = "/Account/logout";
                     options.Cookie.Name = ".AspNetCore.Cookies";
-                    options.Cookie.Expiration = TimeSpan.FromHours(5);
+                    options.Cookie.Expiration = TimeSpan.FromHours(155);
                 });
 
 
@@ -61,6 +62,8 @@ namespace artstesh.ru
             services.AddScoped<IArticleService, ArticleService>();
             services.AddScoped<IFeedbackRepository, FeedbackRepository>();
             services.AddScoped<IFeedbackService, FeedbackService>();
+            services.AddScoped<IMessageHelper, MessageHelper>();
+            services.AddScoped<IAlarmService, AlarmService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

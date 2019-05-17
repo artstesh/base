@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\artstesh.core\artstesh.core.csproj" />
       <ProjectReference Include="..\artstesh.data\artstesh.data.csproj" />
     </ItemGroup>
 

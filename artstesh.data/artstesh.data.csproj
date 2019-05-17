@@ -8,4 +8,8 @@
       <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.15" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\artstesh.core\artstesh.core.csproj" />
+    </ItemGroup>
+
 </Project>

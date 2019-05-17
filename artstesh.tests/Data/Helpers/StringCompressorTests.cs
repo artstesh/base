@@ -2,7 +2,7 @@ using artstesh.data.Helpers;
 using artstesh.tests.FakeFactories;
 using Xunit;
 
-namespace artstesh.tests.Data
+namespace artstesh.tests.Data.Helpers
 {
     public class StringCompressorTests
     {

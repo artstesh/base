@@ -4,6 +4,7 @@ using artstesh.data.DbContext;
 using artstesh.data.Entities;
 using artstesh.data.Repositories;
 using artstesh.tests.FakeFactories;
+using AutoFixture.Xunit2;
 using SemanticComparison.Fluent;
 using Xunit;
 
@@ -21,7 +22,7 @@ namespace artstesh.tests.Data.Repositories
         }
 
         [Theory]
-        [AutoMoqData]
+        [AutoData]
         public async Task Get(Article article)
         {
             _context.Add(article);
@@ -29,8 +30,35 @@ namespace artstesh.tests.Data.Repositories
             //
             var result = await _repository.Get();
             //
-            var expected = result.First(e => e.Text == article.Text);
+            var expected = result.First();
             Assert.True(expected.AsSource().OfLikeness<Article>().Equals(article));
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task Get_Unpublished_True(Article article)
+        {
+            article.Published = false;
+            _context.Add(article);
+            _context.SaveChanges();
+            //
+            var result = await _repository.Get(true);
+            //
+            var expected = result.First();
+            Assert.True(expected.AsSource().OfLikeness<Article>().Equals(article));
+        }
+
+        [Theory]
+        [AutoData]
+        public async Task Get_Unpublished_False(Article article)
+        {
+            article.Published = false;
+            _context.Add(article);
+            _context.SaveChanges();
+            //
+            var result = await _repository.Get();
+            //
+            Assert.True(result.Any() == false);
         }
 
         [Theory]
@@ -90,6 +118,19 @@ namespace artstesh.tests.Data.Repositories
             var result = await _repository.Delete(id);
             //
             Assert.False(result);
+        }
+
+        [Theory]
+        [AutoMoqData]
+        public async Task Publish_Success(Article article)
+        {
+            article.Published = false;
+            _context.Articles.Add(article);
+            _context.SaveChanges();
+            //
+            await _repository.Publish(article.Id);
+            //
+            Assert.True(article.Published);
         }
     }
 }

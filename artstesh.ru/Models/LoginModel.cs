@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace QuizWeb.Models
+namespace artstesh.ru.Models
 {
     public class LoginModel
     {

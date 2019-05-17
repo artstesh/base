@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "artstesh.data", "artstesh.d
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "artstesh.tests", "artstesh.tests\artstesh.tests.csproj", "{591B25CF-6E0A-4197-9970-F1681052596E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "artstesh.core", "artstesh.core\artstesh.core.csproj", "{77ECC1C8-B755-4B2C-B2AD-7389700F7038}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{591B25CF-6E0A-4197-9970-F1681052596E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{591B25CF-6E0A-4197-9970-F1681052596E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{591B25CF-6E0A-4197-9970-F1681052596E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77ECC1C8-B755-4B2C-B2AD-7389700F7038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77ECC1C8-B755-4B2C-B2AD-7389700F7038}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77ECC1C8-B755-4B2C-B2AD-7389700F7038}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77ECC1C8-B755-4B2C-B2AD-7389700F7038}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -20,7 +20,7 @@ namespace artstesh.tests.Data.Converters
             var expected = new ArticleModel
             {
                 Created = article.Created, Id = article.Id, Text = text, Preview = article.Preview,
-                Title = article.Title
+                Title = article.Title, Published = article.Published
             };
             //
             var model = article.ToModel().AsSource().OfLikeness<ArticleModel>();
@@ -35,7 +35,7 @@ namespace artstesh.tests.Data.Converters
             var expected = new Article
             {
                 Created = article.Created, Id = article.Id, Text = StringCompressor.CompressString(article.Text),
-                Preview = article.Preview, Title = article.Title
+                Preview = article.Preview, Title = article.Title, Published = article.Published
             };
             //
             var model = article.FromModel().AsSource().OfLikeness<Article>();

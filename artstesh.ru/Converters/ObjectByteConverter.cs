@@ -2,7 +2,7 @@
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace C2c.Services.Converters
+namespace artstesh.ru.Converters
 {
     public class ObjectByteConverter
     {

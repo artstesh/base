@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using QuizWeb.Data.Entities;
 
 namespace artstesh.data.Entities
 {

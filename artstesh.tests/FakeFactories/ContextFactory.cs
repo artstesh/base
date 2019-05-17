@@ -1,5 +1,6 @@
 using artstesh.data.DbContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace artstesh.tests.FakeFactories
@@ -9,13 +10,10 @@ namespace artstesh.tests.FakeFactories
         private static DbContextOptions<DataContext> CreateNewContextOptions()
         {
             var serviceProvider = new ServiceCollection()
-                .AddEntityFrameworkInMemoryDatabase()
-                .BuildServiceProvider();
-
+                .AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();
             var builder = new DbContextOptionsBuilder<DataContext>();
-            builder.UseInMemoryDatabase()
+            builder.UseInMemoryDatabase("db", new InMemoryDatabaseRoot())
                 .UseInternalServiceProvider(serviceProvider);
-
             return builder.Options;
         }
 

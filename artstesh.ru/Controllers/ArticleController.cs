@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using artstesh.data.Models;
+using artstesh.data.Services;
 using artstesh.ru.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +10,13 @@ namespace artstesh.ru.Controllers
     [Authorize]
     public class ArticleController : Controller
     {
+        private readonly IAlarmService _alarmService;
         private readonly IArticleCacheService _articleCacheService;
 
-        public ArticleController(IArticleCacheService articleCacheService)
+        public ArticleController(IArticleCacheService articleCacheService, IAlarmService alarmService)
         {
             _articleCacheService = articleCacheService;
+            _alarmService = alarmService;
         }
 
         // GET: Article
@@ -38,8 +41,13 @@ namespace artstesh.ru.Controllers
         {
             try
             {
-                if (await _articleCacheService.Create(model) > 0)
+                var addedId = await _articleCacheService.Create(model);
+                if (addedId > 0)
+                {
+                    await _alarmService.AlarmAboutArticle(model.Title,
+                        Url.Action("Details", "Reading", new {id = addedId}));
                     return RedirectToAction(nameof(Index));
+                }
             }
             catch
             {

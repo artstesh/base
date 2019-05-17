@@ -1,7 +1,7 @@
 using System;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace QuizWeb.Data.Converters
+namespace artstesh.data.DbContext
 {
     public class BoolToIntConverter : ValueConverter<bool, int>
     {

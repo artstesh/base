@@ -10,5 +10,6 @@ namespace artstesh.data.Models
         public string Preview { get; set; }
         public string Title { get; set; }
         public DateTime Created { get; set; }
+        public bool Published { get; set; }
     }
 }

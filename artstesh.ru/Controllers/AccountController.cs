@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using artstesh.core.Config;
+using artstesh.ru.Models;
 using artstesh.ru.Services;
-using C2c.Config;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using QuizWeb.Models;
 
-namespace QuizWeb.Controllers.WebControllers
+namespace artstesh.ru.Controllers
 {
     public class AccountController : Controller
     {

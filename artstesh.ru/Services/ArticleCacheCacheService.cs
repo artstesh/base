@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using artstesh.data.Models;
 using artstesh.data.Services;
-using C2c.Helper;
-using C2c.Services.Converters;
+using artstesh.ru.Converters;
+using artstesh.ru.Helpers;
 
 namespace artstesh.ru.Services
 {

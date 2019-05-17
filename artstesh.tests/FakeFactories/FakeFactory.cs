@@ -4,7 +4,7 @@ using AutoFixture.Kernel;
 
 namespace artstesh.tests.FakeFactories
 {
-    public class FakeFactory
+    public static class FakeFactory
     {
         public static readonly Fixture Fixture = new Fixture();
 

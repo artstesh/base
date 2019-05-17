@@ -1,121 +1,176 @@
-﻿<div class="article-body-div">
+﻿<div class="article-index">
     <p>
-        Постановка: необходим класс, принимающий на вход строку и возвращающий ее в обратном порядке.
-        Создадим консольный проект First с классом
+        <a href="#" onclick="ScrollToAnchor('st-1')"> Настройка тестируемого проекта </a>
+    </p>
+    <p>
+        <a href="#" onclick="ScrollToAnchor('st-2')"> Заботимся об изоляции </a>
+    </p>
+    <p>
+        <a href="#" onclick="ScrollToAnchor('st-3')"> Тестирование </a>
     </p>
 </div>
 
-<div class="article-body-code">
-    <p>public class StringReverser</p>
-    <p>{</p>
-    <p> public string Reverse(string input){return string.Empty;}</p>
-    <p>}</p>
-</div>
 
 <div class="article-body-div">
-    <p>
-        Создадим в этом же solution'e еще один проект - FirstTests,
-        подключим @Html.ActionLink("необходимые библиотеки", "Details", "Reading", new {id = 4}).
-        В данном примере мы рассмотрим работу и с nUnit и c xUnit, просто чтобы не повторять одно и то же в двух
-        отдельных статьях. В последующем примеры, вероятно, будут строиться на каком-то одном движке.
-    </p>
 
-    <p>
-        Создаем первый тестирующий класс StringReverserTests. Именование &lt;Имя класс&gt;Tests является
-        сложившейся традицией и я бы рекомендовал придерживаться такой практики, а не придумывать
-        "особенные" имена для каждого класса.
-    </p>
-
-    <p>
-        Тем временем сталкиваемся с первым различием в работе с библиотеками: для того чтобы nUnit
-        понял, что StringReverserTests это именно класс с тестами необходимо добавить атрибут
-        [TestFixture], xUnit обходится без подобных церемоний.
-    </p>
+    <p>База данных - внешний ресурс и мы, при тестировании нашего приложения, должны исключить любые намеки на его использование при запуске тестов. Entity Framework, в части обеспечения работы с базой данных, также стоит относить к категории вещей, которые в тестах не нуждаются (если у вас все же есть сомнения в том, что EF работает и вы хотите его протестировать... предлагаю не заниматься подобным хотя бы при разработке коммерческого приложения). </p>
+    <p>Потому наша задача при написании тестов на классы, работающие с базой данных - обеспечить подделку БД. И Core дает для этих целей фантастически удобный инструментарий. Наша сегодняшняя реализация будет основываться на MVC проекте (полагаю, что иные варианты проектов не должны представлять больших проблем после знакомства с базовым подходом). </p>
+    <p>Общая идея сводится к тому, что мы создаем базу данных в оперативной памяти прямо в момент запуска тестов. </p>
+    <p>Для реализации описанного ниже подхода необходимо прежде установить <a href="http://artstesh.ru/Reading/Details/3">рекомендуемые библиотеки</a>.</p>
 </div>
-<div class="article-body-code">
 
 
-    <div class="tabbed-area">
+<div class="article-sub-sub-title">Настройка тестируемого проекта</div>
 
-        <ul class="tabs group">
-            <li onclick="SwitchTab('box-1')">nUnit</li>
-            <li onclick="SwitchTab('box-2')">xUnit</li>
-        </ul>
+<div class="article-body-div" id="st-1">
 
-        <div class="box-wrap">
-
-            <div id="box-1">
-                [TestFixture]
-                public class StringReverserTests{}
+    <p>Вероятно, для большинства первый шаг очевиден, но все же приведу его для целостности повествования... В файле Startup.cs нашего приложения необходимо прописать ссылку на файл контекста и connection string. </p>
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>&nbsp;<span class="code-special">public</span> <span class="code-special">void</span> ConfigureServices(IServiceCollection services)</p>
+                    <p>&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;...</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;services.AddDbContext&lt;DataContext&gt;(options =&gt;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.UseMySQL(Configuration.GetConnectionString("DataContext"));</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;});</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;...</p>
+                    <p>&nbsp;}</p>
+                </div>
             </div>
-
-            <div id="box-2">
-                public class StringReverserTests{}
-            </div>
-
         </div>
-
     </div>
 
+    <p>В данном случае используется подключение к базе MySql, но вы можете выбрать UseSqlServer или UseSqlite, общая идея не изменится. </p>
+    <p>Приведу пример реализации DbContext'a, работающего с одной единственной таблицей Article. </p>
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>&nbsp;<span class="code-special">public</span> class DataContext : Microsoft.EntityFrameworkCore.DbContext</p>
+                    <p>&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> DataContext(DbContextOptions&lt;DataContext&gt; options)</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: base(options)</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{ }</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> DbSet&lt;Article&gt; Articles { get; set; }</p>
+                    <p>&nbsp;}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <p>И последний отрывок из функционального кода, описывающий класс, осуществляющий запросы к БД. </p>
+
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>&nbsp;<span class="code-special">public</span> class ArticleRepository : IArticleRepository</p>
+                    <p>&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">private</span> <span class="code-special">readonly</span> DataContext _context;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> ArticleRepository(DataContext context)</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context = context;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">async</span> <span class="code-attr">Task</span>&lt;bool&&gt; Delete(int id)</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> entity = <span class="code-special">await</span> _context.Articles.FirstOrDefaultAsync(e => e.Id == id);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (entity == null) <span class="code-special">return</span> false;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context.Articles.Remove(entity);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">await</span> _context.<span class="code-methodl">SaveChangesAsync</span>();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> true;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+                    <p>&nbsp;}</p>
+
+                </div>
+            </div>
+        </div>
+
+        <p>На этом закончим с функциональным кодом и перейдем в тестирующий проект. </p>
+    </div>
 </div>
 
-<div class="article-body-div">
+<div class="article-sub-sub-title"> Заботимся об изоляции</div>
+
+<div class="article-body-div" id="st-2">
+
     <p>
-        И, собственно, сам тестирующий метод:
+        "Из коробки" реализация поддельной базы данных на поверку вовсе не оказывается "серебряной пулей" и без переделки нарушает один главных <a href="http://artstesh.ru/Reading/Details/7">принципов автотестирования</a>
+        - изолированность.
     </p>
+    <p>При запуске каждого отдельного теста мы хотим, чтобы он работал со своей отдельной поддельной базой данных, не зашумленной его собратьями, но для реализации этого механизма на деле придется кое-что довести напильником... </p>
+    <p>Существуют различные варианты реализации необходимого функционала с точки зрения организации классов, вы вольны выбирать что угодно, я же в данном случае предпочитаю идти по пути наименьшего сопротивления и реализую в тестирующем проекте статическую фабрику... кто без греха, пусть первым кинет в меня клавиатуру) </p>
+    <p>На самом деле полагаю этот подход более чем адекватным - ни к чему городить изящные замки там, где совершенно точно хватит глинобитной хижины. Итак... </p>
+
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>&nbsp;<span class="code-special">public</span> <span class="code-special">static</span> class ContextFactory</p>
+                    <p>&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">private</span> <span class="code-special">static</span> DbContextOptions&lt;DataContext&&gt; CreateNewContextOptions()</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> serviceProvider = <span class="code-special">new</span> ServiceCollection()</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> builder = <span class="code-special">new</span> DbContextOptionsBuilder&lt;DataContext&&gt;();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;builder.UseInMemoryDatabase("db", <span class="code-special">new</span> InMemoryDatabaseRoot())</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.UseInternalServiceProvider(serviceProvider);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> builder.Options;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">static</span> DataContext GetContext()</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> <span class="code-special">new</span> DataContext(CreateNewContextOptions());</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+                    <p>&nbsp;}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="article-body-code">
+<div class="article-sub-sub-title">Тестирование</div>
+<div class="article-body-div" id="st-3">
 
-    [Test]
-    public void Reverse_Success()
-    {
-    var input = "text";
-    var expected = "txet";
-    var reverser = new StringReverser();
-    //
-    var result = reverser.Reverse(input);
-    //
-    Assert.True(result == expected);
-    }
+    <p>Вот, собственно и все приготовления, программировать становится проще год от года) Можем писать тесты. Метод мы реализовали всего один, его и проверим. </p>
 
-    [Fact]
-    public void Reverse_Success()
-    {
-    var input = "text";
-    var expected = "txet";
-    var reverser = new StringReverser();
-    //
-    var result = reverser.Reverse(input);
-    //
-    Assert.True(result == expected);
-    }
-</div>
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
 
-<div class="article-body-div">
-    <p>
+                    <p>&nbsp;<span class="code-special">public</span> class ArticleRepositoryTests</p>
+                    <p>&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">private</span> <span class="code-special">readonly</span> DataContext _context;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">private</span> <span class="code-special">readonly</span> ArticleRepository _repository;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> ArticleRepositoryTests()</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context = ContextFactory.GetContext();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_repository = <span class="code-special">new</span> ArticleRepository(_context);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;[<span class="code-attr">Fact</span>]</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">async</span> <span class="code-attr">Task</span> Delete()</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> article = <span class="code-special">new</span> Article();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context.Articles.<span class="code-method">Add</span>(article);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context.<span class="code-method">SaveChanges</span>();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">await</span> _repository.Delete(article.Id);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> expectedNull = _context.Articles.<span class="code-method">FirstOrDefault</span>(e => e.Id == article.Id);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-method">Null</span>(expectedNull);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+                    <p>&nbsp;}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        Обращаем внимание на атрибуты Test/Fact, именно по ним система узнает, что это тест, без них этот код просто не будет
-        исполнен.
-    </p>
-    <p>
-        Весь метод делится на три части: подготовка данных, вызов тестируемого метода, проверка результата. Мне представляется
-        что код в данном случае говорит сам за себя, но... вкратце пройдемся по происходящему.
-        Поскольку мы хотим проверить работу метода Reverse в StringReverser, нам, очевидно, нужен экземпляр
-        этого класса. Нужна строка на которой мы будем проверять метод (input) и определение того, что мы ожидаем
-        увидеть в результате (expected).
-    </p>
-    Assert... Assert.True проверяет, что переданное выражение (result == expected) является true, иначе выбрасывает
-    исключение и система сообщает нам, что тест не прошел. Проверим?)
-    <p>
-        Если вы являетесь счастливым обладателем Rider или ReSharper, то жмем Ctrl+T,L. В чистом Visual Studio - Ctrl+T,A.
-        Можно, конечно, и в менюшках поискать кнопку "Run all tests".
-    </p>
-
-    <p>
-        В результате видим красную полоску - тест не прошел. Что не удивительно - функционал метода Reverse не был
-        реализован и он всегда возвращает пустую строку. Предпочту оставить реализацию корректного функционала на
-        совести читателя) Добиваемся прохождения теста и двигаемся дальше, впереди параметризированные тесты!
-    </p>
+    <p>Как видим, работать с контекстом в тестах можно точно также, как и в функциональном коде, никаких волшебных приемов тут нет.</p>
 </div>

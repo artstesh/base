@@ -1,4 +1,4 @@
-﻿namespace Student.RemoteAgents
+﻿namespace artstesh.core.RemoteAgents
 {
     public interface IMailAgent
     {

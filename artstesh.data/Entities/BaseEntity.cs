@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace QuizWeb.Data.Entities
+namespace artstesh.data.Entities
 {
     public abstract class BaseEntity
     {

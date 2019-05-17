@@ -16,9 +16,11 @@ namespace artstesh.data.Repositories
             _context = context;
         }
 
-        public async Task<List<Article>> Get()
+        public async Task<List<Article>> Get(bool unpublished = false)
         {
-            return _context.Articles.OrderByDescending(e => e.Created).ToList();
+            return _context.Articles
+                .Where(e => unpublished || e.Published)
+                .OrderByDescending(e => e.Created).ToList();
         }
 
         public async Task<int> Create(Article article)
@@ -52,6 +54,14 @@ namespace artstesh.data.Repositories
         {
             var entity = await _context.Articles.FirstOrDefaultAsync(e => e.Id == id);
             return entity;
+        }
+
+        public async Task Publish(int articleId)
+        {
+            var entity = await _context.Articles.FirstOrDefaultAsync(e => e.Id == articleId);
+            if (entity == null) return;
+            entity.Published = true;
+            await _context.SaveChangesAsync();
         }
     }
 }

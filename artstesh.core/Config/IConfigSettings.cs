@@ -1,4 +1,4 @@
-﻿namespace C2c.Config
+﻿namespace artstesh.core.Config
 {
     public interface IConfigSettings
     {

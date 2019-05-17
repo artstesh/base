@@ -1,10 +1,10 @@
 using System;
 using System.Threading.Tasks;
-using C2c.Config;
-using C2c.Services.Converters;
+using artstesh.core.Config;
+using artstesh.ru.Converters;
 using Microsoft.Extensions.Caching.Distributed;
 
-namespace C2c.Helper
+namespace artstesh.ru.Helpers
 {
     public class CacheHelper : ICacheHelper
     {

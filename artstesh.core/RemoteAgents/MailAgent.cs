@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using System.Net.Mail;
-using C2c.Config;
+using artstesh.core.Config;
 
-namespace Student.RemoteAgents
+namespace artstesh.core.RemoteAgents
 {
     public class MailAgent : IMailAgent
     {
@@ -23,6 +23,7 @@ namespace Student.RemoteAgents
             mail.To.Add(new MailAddress(mailto));
             mail.Subject = caption;
             mail.Body = message;
+            mail.IsBodyHtml = true;
             if (!string.IsNullOrEmpty(attachFile))
             {
                 if (attachFile.Contains('^'))

@@ -2,7 +2,7 @@
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 
-namespace C2c.Config
+namespace artstesh.core.Config
 {
     public class ConfigSettings : IConfigSettings
     {

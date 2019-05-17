@@ -12,7 +12,7 @@ namespace artstesh.data.Converters
             return new ArticleModel
             {
                 Created = article.Created, Id = article.Id, Text = StringCompressor.DecompressString(article.Text),
-                Preview = article.Preview, Title = article.Title
+                Preview = article.Preview, Title = article.Title, Published = article.Published
             };
         }
 
@@ -22,7 +22,7 @@ namespace artstesh.data.Converters
             return new Article
             {
                 Created = article.Created, Id = article.Id, Text = StringCompressor.CompressString(article.Text),
-                Preview = article.Preview, Title = article.Title
+                Preview = article.Preview, Title = article.Title, Published = article.Published
             };
         }
     }

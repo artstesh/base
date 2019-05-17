@@ -1,6 +1,5 @@
 using artstesh.data.Entities;
 using Microsoft.EntityFrameworkCore;
-using QuizWeb.Data.Converters;
 
 namespace artstesh.data.DbContext
 {

@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace C2c.Helper
+namespace artstesh.ru.Helpers
 {
     public interface ICacheHelper
     {

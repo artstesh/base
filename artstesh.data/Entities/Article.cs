@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
-using QuizWeb.Data.Entities;
 
 namespace artstesh.data.Entities
 {
@@ -14,5 +13,7 @@ namespace artstesh.data.Entities
         [Column("Preview")] public string Preview { get; set; }
 
         [Column("Created")] public DateTime Created { get; set; }
+        
+        [Column("Published")] public bool Published { get; set; }
     }
 }

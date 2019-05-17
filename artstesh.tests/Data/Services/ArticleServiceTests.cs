@@ -32,7 +32,7 @@ namespace artstesh.tests.Data.Services
         {
             article.Text = StringCompressor.CompressString(article.Text);
             var list = new List<Article> {article};
-            _repository.Setup(e => e.Get()).ReturnsAsync(list);
+            _repository.Setup(e => e.Get(false)).ReturnsAsync(list);
             //
             var result = await _service.Get();
             //

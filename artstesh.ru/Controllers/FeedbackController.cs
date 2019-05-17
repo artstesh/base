@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
+using artstesh.core.Config;
 using artstesh.data.Models;
 using artstesh.data.Services;
 using artstesh.ru.Models;
 using artstesh.ru.Services;
-using C2c.Config;
 using Microsoft.AspNetCore.Mvc;
 
 namespace artstesh.ru.Controllers
@@ -51,6 +51,7 @@ namespace artstesh.ru.Controllers
                 model.GoogleKey = _settings.ApplicationKeys.GoogleKey;
                 return View(model);
             }
+
             return RedirectToAction("Success");
         }
 

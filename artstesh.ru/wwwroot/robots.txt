@@ -1,0 +1,20 @@
+User-agent: Yandex
+Disallow: /account/
+Disallow: /article/
+Disallow: /home/
+
+
+User-agent: Googlebot
+Allow: *.css
+Allow: *.js
+Disallow: /account/
+Disallow: /article/
+Disallow: /home/
+
+User-agent: *
+Disallow: /account/
+Disallow: /article/
+Disallow: /home/
+
+
+Sitemap: http://artstesh.ru/sitemap.xml
