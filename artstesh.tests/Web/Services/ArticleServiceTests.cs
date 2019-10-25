@@ -17,14 +17,14 @@ namespace artstesh.tests.Web.Services
     public class ArticleServiceTests
     {
         private readonly Mock<ICacheHelper> _cache;
-        private readonly ArticleCacheCacheService _cacheCacheService;
+        private readonly ArticleCacheService _cacheService;
         private readonly Mock<IArticleService> _repository;
 
         public ArticleServiceTests()
         {
             _cache = new Mock<ICacheHelper>(MockBehavior.Strict);
             _repository = new Mock<IArticleService>(MockBehavior.Strict);
-            _cacheCacheService = new ArticleCacheCacheService(_repository.Object, _cache.Object);
+            _cacheService = new ArticleCacheService(_repository.Object, _cache.Object);
         }
 
         [Theory]
@@ -35,7 +35,7 @@ namespace artstesh.tests.Web.Services
             var list = new List<ArticleModel> {article};
             _repository.Setup(e => e.Get()).ReturnsAsync(list);
             //
-            var result = await _cacheCacheService.Get();
+            var result = await _cacheService.Get();
             //
             var expected = result.First(e => e.Preview == article.Preview);
             var source = article.AsSource().OfLikeness<ArticleModel>();
@@ -48,7 +48,7 @@ namespace artstesh.tests.Web.Services
         {
             _repository.Setup(e => e.Create(It.IsAny<ArticleModel>())).ReturnsAsync(expected);
             //
-            var result = await _cacheCacheService.Create(article);
+            var result = await _cacheService.Create(article);
             //
             Assert.True(result == expected);
             _repository.Verify(e => e.Create(It.IsAny<ArticleModel>()), Times.Once);
@@ -61,7 +61,7 @@ namespace artstesh.tests.Web.Services
             _repository.Setup(e => e.Update(It.IsAny<ArticleModel>())).ReturnsAsync(expected);
             _cache.Setup(e => e.Remove("article_" + model.Id)).Returns(Task.Run(() => { }));
             //
-            var result = await _cacheCacheService.Update(model);
+            var result = await _cacheService.Update(model);
             //
             Assert.True(result == expected);
             _repository.Verify(e => e.Update(It.IsAny<ArticleModel>()), Times.Once);
@@ -74,7 +74,7 @@ namespace artstesh.tests.Web.Services
             _repository.Setup(e => e.Delete(id)).ReturnsAsync(expected);
             _cache.Setup(e => e.Remove("article_" + id)).Returns(Task.Run(() => { }));
             //
-            var result = await _cacheCacheService.Delete(id);
+            var result = await _cacheService.Delete(id);
             //
             Assert.True(result == expected);
             _repository.Verify(e => e.Delete(id), Times.Once);
@@ -87,7 +87,7 @@ namespace artstesh.tests.Web.Services
             var bytes = ObjectByteConverter.ObjectToByteArray(article);
             _cache.Setup(e => e.Get("article_" + article.Id)).ReturnsAsync(bytes);
             //
-            var result = await _cacheCacheService.GetCached(article.Id);
+            var result = await _cacheService.GetCached(article.Id);
             //
             var source = article.AsSource().OfLikeness<ArticleModel>();
             Assert.True(source.Equals(result));
@@ -104,7 +104,7 @@ namespace artstesh.tests.Web.Services
             _cache.Setup(e => e.Set("article_" + article.Id, It.IsAny<ArticleModel>(), -1))
                 .Returns(Task.Run(() => { }));
             //
-            var result = await _cacheCacheService.GetCached(article.Id);
+            var result = await _cacheService.GetCached(article.Id);
             //
             var source = article.AsSource().OfLikeness<ArticleModel>();
             Assert.True(source.Equals(result));

@@ -42,7 +42,6 @@ namespace artstesh.data.Helpers
                 {
                     gZipStream.Read(buffer, 0, buffer.Length);
                 }
-
                 return Encoding.UTF8.GetString(buffer);
             }
         }

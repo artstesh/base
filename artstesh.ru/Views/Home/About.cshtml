@@ -1,176 +1,229 @@
 ﻿<div class="article-index">
     <p>
-        <a href="#" onclick="ScrollToAnchor('st-1')"> Настройка тестируемого проекта </a>
+        <a href="#" onclick="ScrollToAnchor('st-1')">Раздуваем тест</a>
     </p>
     <p>
-        <a href="#" onclick="ScrollToAnchor('st-2')"> Заботимся об изоляции </a>
+        <a href="#" onclick="ScrollToAnchor('st-2')">Много, очень много тестов</a>
     </p>
     <p>
-        <a href="#" onclick="ScrollToAnchor('st-3')"> Тестирование </a>
+        <a href="#" onclick="ScrollToAnchor('st-3')">Вторгаемся в функциональный код</a>
+    </p>
+    <p>
+        <a href="#" onclick="ScrollToAnchor('st-4')">Специальные классы в тестирующем проекте</a>
+    </p>
+    <p>
+        <a href="#" onclick="ScrollToAnchor('st-5')">Автоматизация</a>
     </p>
 </div>
-
-
 <div class="article-body-div">
-
-    <p>База данных - внешний ресурс и мы, при тестировании нашего приложения, должны исключить любые намеки на его использование при запуске тестов. Entity Framework, в части обеспечения работы с базой данных, также стоит относить к категории вещей, которые в тестах не нуждаются (если у вас все же есть сомнения в том, что EF работает и вы хотите его протестировать... предлагаю не заниматься подобным хотя бы при разработке коммерческого приложения). </p>
-    <p>Потому наша задача при написании тестов на классы, работающие с базой данных - обеспечить подделку БД. И Core дает для этих целей фантастически удобный инструментарий. Наша сегодняшняя реализация будет основываться на MVC проекте (полагаю, что иные варианты проектов не должны представлять больших проблем после знакомства с базовым подходом). </p>
-    <p>Общая идея сводится к тому, что мы создаем базу данных в оперативной памяти прямо в момент запуска тестов. </p>
-    <p>Для реализации описанного ниже подхода необходимо прежде установить <a href="http://artstesh.ru/Reading/Details/3">рекомендуемые библиотеки</a>.</p>
+    <p>Любое приложение изобилует методами, возвращающими ссылочные типы или изменяющими их состояние в некотором источнике. В момент тестирования таких методов разработчик сталкивается с весьма неприятной задачей – в assert’ах необходимо проверить все данные. В простых примерах с примитивными типами вся проверка сводилась к одному утверждению, в объекте же могут быть десятки примитивов, а в особо страшных случаях (в промышленном программировании постоянно, чего уж)) – другие объекты.</p>
+    <p>Постановка: необходимо протестировать следующий метод</p>
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>public <span class="code-special">async</span> <span class="code-attr">Task</span>&lt;int&gt; Create(Article article)</p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">await</span> _context.AddAsync(article);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">await</span> _context.<span class="code-methodl">SaveChangesAsync</span>();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> article.Id;</p>
+                    <p>}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Класс Article описывается следующей моделью:</p>
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>public class Article </p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">string</span> Text { get; set; }</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">string</span> Title { get; set; }</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">string</span> Preview { get; set; }</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> DateTime Created { get; set; }</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> bool Published { get; set; }</p>
+                    <p>}</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-
-<div class="article-sub-sub-title">Настройка тестируемого проекта</div>
-
+<div class="article-sub-sub-title"> Раздуваем тест </div>
 <div class="article-body-div" id="st-1">
-
-    <p>Вероятно, для большинства первый шаг очевиден, но все же приведу его для целостности повествования... В файле Startup.cs нашего приложения необходимо прописать ссылку на файл контекста и connection string. </p>
+    <p>Самый простой и прямолинейный подход, который выбирают очень и очень многие – сделать один тест со множеством утверждений. На практике это выглядит примерно так:</p>
+    <p>*Если вы не в курсе, что это за FakeFactory и как она работает, советую обратиться к предыдущей <a href="http://artstesh.ru/Reading/Details/11">статье</a>.</p>
     <div class="article-body-code">
         <div class="tabbed-area">
             <div>
                 <div class="box-wrap">
-                    <p>&nbsp;<span class="code-special">public</span> <span class="code-special">void</span> ConfigureServices(IServiceCollection services)</p>
-                    <p>&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;...</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;services.AddDbContext&lt;DataContext&gt;(options =&gt;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;options.UseMySQL(Configuration.GetConnectionString("DataContext"));</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;});</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;...</p>
-                    <p>&nbsp;}</p>
+                    <p>[<span class="code-attr">Fact</span>]</p>
+                    <p><span class="code-special">public</span> <span class="code-special">async</span> <span class="code-attr">Task</span> Create_Success ()</p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> article = FakeFactory.Fixture.Create&lt;Article&gt;();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> result = <span class="code-special">await</span> _repository.Create(article);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> expected = _context.Articles.<span class="code-methodl">First</span>(e =&gt; e.Text == article.Text);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(result == expected.Id);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(article.Text == expected.Text);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(article.Title == expected.Title);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(article.Created == expected.Created);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(article.Preview == expected.Preview);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(article.Published == expected.Published);</p>
+                    <p>}</p>
                 </div>
             </div>
         </div>
     </div>
-
-    <p>В данном случае используется подключение к базе MySql, но вы можете выбрать UseSqlServer или UseSqlite, общая идея не изменится. </p>
-    <p>Приведу пример реализации DbContext'a, работающего с одной единственной таблицей Article. </p>
-    <div class="article-body-code">
-        <div class="tabbed-area">
-            <div>
-                <div class="box-wrap">
-                    <p>&nbsp;<span class="code-special">public</span> class DataContext : Microsoft.EntityFrameworkCore.DbContext</p>
-                    <p>&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> DataContext(DbContextOptions&lt;DataContext&gt; options)</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: base(options)</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{ }</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> DbSet&lt;Article&gt; Articles { get; set; }</p>
-                    <p>&nbsp;}</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <p>И последний отрывок из функционального кода, описывающий класс, осуществляющий запросы к БД. </p>
-
-    <div class="article-body-code">
-        <div class="tabbed-area">
-            <div>
-                <div class="box-wrap">
-                    <p>&nbsp;<span class="code-special">public</span> class ArticleRepository : IArticleRepository</p>
-                    <p>&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">private</span> <span class="code-special">readonly</span> DataContext _context;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> ArticleRepository(DataContext context)</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context = context;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">async</span> <span class="code-attr">Task</span>&lt;bool&&gt; Delete(int id)</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> entity = <span class="code-special">await</span> _context.Articles.FirstOrDefaultAsync(e => e.Id == id);</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (entity == null) <span class="code-special">return</span> false;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context.Articles.Remove(entity);</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">await</span> _context.<span class="code-methodl">SaveChangesAsync</span>();</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> true;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
-                    <p>&nbsp;}</p>
-
-                </div>
-            </div>
-        </div>
-
-        <p>На этом закончим с функциональным кодом и перейдем в тестирующий проект. </p>
-    </div>
+    <p>По большому счету, выглядит не так уж и страшно) Именно поэтому такой подход и закрепляется иногда в небольших проектах, или становится стандартным для отдельных разработчиков. Пока наши модели имеют меньше десятка полей, с этим еще можно как-то жить. Ситуация резко становится катастрофической, когда появляется композиция или объекты распухают до десятков полей.</p>
+    <p>Писать тесты на такое становится практически невозможно, хотя бывает и такое, что особо упорные энтузиасты пишут шаблоны для автоматического создания утверждений на основе типа…</p>
+    <p>Читать все это тоже становится удовольствием ниже среднего и тут уж никаких лайфхаков нет – если при чтении теста тебе приходится пользоваться скроллом, то пора бить тревогу.</p>
+    <p>Понятное дело, любое изменение в модели ведет к необходимости править все подобные тесты. И, что гораздо важнее, можно забыть добавить новое поле в тесты и они все равно будут проходить! Вот так и теряется доверие к тестирующему проекту…</p>
+    <p>Итого: сложно писать, сложно читать, сложно поддерживать.</p>
 </div>
-
-<div class="article-sub-sub-title"> Заботимся об изоляции</div>
-
+<div class="article-sub-sub-title"> Много, очень много тестов </div>
 <div class="article-body-div" id="st-2">
-
-    <p>
-        "Из коробки" реализация поддельной базы данных на поверку вовсе не оказывается "серебряной пулей" и без переделки нарушает один главных <a href="http://artstesh.ru/Reading/Details/7">принципов автотестирования</a>
-        - изолированность.
-    </p>
-    <p>При запуске каждого отдельного теста мы хотим, чтобы он работал со своей отдельной поддельной базой данных, не зашумленной его собратьями, но для реализации этого механизма на деле придется кое-что довести напильником... </p>
-    <p>Существуют различные варианты реализации необходимого функционала с точки зрения организации классов, вы вольны выбирать что угодно, я же в данном случае предпочитаю идти по пути наименьшего сопротивления и реализую в тестирующем проекте статическую фабрику... кто без греха, пусть первым кинет в меня клавиатуру) </p>
-    <p>На самом деле полагаю этот подход более чем адекватным - ни к чему городить изящные замки там, где совершенно точно хватит глинобитной хижины. Итак... </p>
-
-    <div class="article-body-code">
-        <div class="tabbed-area">
-            <div>
-                <div class="box-wrap">
-                    <p>&nbsp;<span class="code-special">public</span> <span class="code-special">static</span> class ContextFactory</p>
-                    <p>&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">private</span> <span class="code-special">static</span> DbContextOptions&lt;DataContext&&gt; CreateNewContextOptions()</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> serviceProvider = <span class="code-special">new</span> ServiceCollection()</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.AddEntityFrameworkInMemoryDatabase().BuildServiceProvider();</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> builder = <span class="code-special">new</span> DbContextOptionsBuilder&lt;DataContext&&gt;();</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;builder.UseInMemoryDatabase("db", <span class="code-special">new</span> InMemoryDatabaseRoot())</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.UseInternalServiceProvider(serviceProvider);</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> builder.Options;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">static</span> DataContext GetContext()</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> <span class="code-special">new</span> DataContext(CreateNewContextOptions());</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
-                    <p>&nbsp;}</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <p>Вариант номер два: разбить каждый из описанных выше тестов на множество маленьких, оставив по несколько утверждений. Не будем приводить пример кода, ибо мысль очевидна. Вопрос в том, чего же мы добились этим изменением.</p>
+    <p>Единственная возможная мотивация здесь – попытка соблюсти <a href=” http://artstesh.ru/Reading/Details/7#”>принцип лаконичности</a>. Попытка, в целом успешная, но бесмыссленная…</p>
+    <p>Проще ли стало читать тест? Ничуть теперь их стало больше и скролл точно понадобится.</p>
+    <p>Проще ли писать? Ничего не изменилось, времени на написание будет затрачено примерно столько же, и, вероятно, чуть больше.</p>
+    <p>Поддержка? И снова без изменений.</p>
 </div>
-
-<div class="article-sub-sub-title">Тестирование</div>
+<div class="article-sub-sub-title"> Вторгаемся в функциональный код </div>
 <div class="article-body-div" id="st-3">
-
-    <p>Вот, собственно и все приготовления, программировать становится проще год от года) Можем писать тесты. Метод мы реализовали всего один, его и проверим. </p>
-
+    <p>Раздражение описанными подходами ведет нас к корню проблемы: наша задача проверить равенство объектов, и каждый программист знает, что у класса object есть метод Equals… Совпадение? Не думаю!</p>
+    <p>Все, что требуется – переопределить метод Equals в классе Article:</p>
     <div class="article-body-code">
         <div class="tabbed-area">
             <div>
                 <div class="box-wrap">
-
-                    <p>&nbsp;<span class="code-special">public</span> class ArticleRepositoryTests</p>
-                    <p>&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">private</span> <span class="code-special">readonly</span> DataContext _context;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">private</span> <span class="code-special">readonly</span> ArticleRepository _repository;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> ArticleRepositoryTests()</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context = ContextFactory.GetContext();</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_repository = <span class="code-special">new</span> ArticleRepository(_context);</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;[<span class="code-attr">Fact</span>]</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">async</span> <span class="code-attr">Task</span> Delete()</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> article = <span class="code-special">new</span> Article();</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context.Articles.<span class="code-method">Add</span>(article);</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_context.<span class="code-method">SaveChanges</span>();</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">await</span> _repository.Delete(article.Id);</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> expectedNull = _context.Articles.<span class="code-method">FirstOrDefault</span>(e => e.Id == article.Id);</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-method">Null</span>(expectedNull);</p>
-                    <p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
-                    <p>&nbsp;}</p>
+                    <p>public bool Equals(Article other)</p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;if (ReferenceEquals(null, other)) <span class="code-special">return</span> false;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;if (ReferenceEquals(this, other)) <span class="code-special">return</span> true;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> <span class="code-special">string</span>.Equals(Text, other.Text) && </p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">string</span>.Equals(Title, other.Title) && </p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">string</span>.Equals(Preview, other.Preview) && </p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Created.Equals(other.Created) && </p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Published == other.Published;</p>
+                    <p>}</p>
+                    <p><span class="code-special">public</span> override bool Equals(object obj)</p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;if (ReferenceEquals(null, obj)) <span class="code-special">return</span> false;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;if (ReferenceEquals(this, obj)) <span class="code-special">return</span> true;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;if (obj.GetType() != this.GetType()) <span class="code-special">return</span> false;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> Equals((Article) obj);</p>
+                    <p>}</p>
                 </div>
             </div>
         </div>
     </div>
-
-    <p>Как видим, работать с контекстом в тестах можно точно также, как и в функциональном коде, никаких волшебных приемов тут нет.</p>
+    <p >Тест снова один и выглядит он гораздо опрятнее.</p>
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>[<span class="code-attr">Fact</span>]</p>
+                    <p><span class="code-special">public</span> <span class="code-special">async</span> <span class="code-attr">Task</span> Create_Success ()</p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> article = FakeFactory.Fixture.Create&lt;Article&gt;();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> result = <span class="code-special">await</span> _repository.Create(article);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> expected = _context.Articles.<span class="code-methodl">First</span>(e =&gt; e.Text == article.Text);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(result == expected.Id);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(article.Equals(expected));</p>
+                    <p>}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Итак, чего же мы добились?</p>
+    <p>Читаемость выроста колоссально, тест лаконичен и понятен с первого взгляда.</p>
+    <p>Достаточно один раз написать Equals для модели и далее пользоваться им во всех тестах. Действительно, написание тоже вышло на новый уровень.</p>
+    <p>Тесты стало легко поддерживать – все ключевые данные собраны компактно. К тому же гораздо сложнее забыть добавить новое поле в метод Equals, лежащий в этом же классе Article, нежели куда-то в тестирующий код.</p>
+    <p>Мы нашли «серебряную пулю»?) Отнюдь. Один из важнейших, впрочем, не писанных, принципов тестирования запрещает вмешательство в тестируемый код. А именно этим мы и занимаемся – мы вынесли обслуживающие тестирование методы в функциональный код! На первый взгляд это может показаться не существенным, а может и на второй… Много вопросов появится в тот момент, когда бизнес-требования потребуют использования метода Equals)</p>
+    <p>В итоге стоит отметить, что такой подход имеет право на существование и действительно весьма удобен… за неимением альтернатив. Но каноны придумывают не просто так и, если альтернатива есть, лучше воспользоваться ею.</p>
+</div>
+<div class="article-sub-sub-title">Специальные классы в тестирующем проекте </div>
+<div class="article-body-div" id="st-4">
+    <p>Создание расширений для моделей в тестовом проекте – одна из альтернатив. Для всех моделей создаются специальные методы сравнения:</p>
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>public <span class="code-special">static</span> class ArticleComparer</p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">public</span> <span class="code-special">static</span> bool IsEqual(this Article article, Article other)</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (article == null || other == null) <span class="code-special">return</span> false;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">return</span> <span class="code-special">string</span>.Equals(article.Text, other.Text) && </p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">string</span>.Equals(article.Title, other.Title) && </p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">string</span>.Equals(article.Preview, other.Preview) && </p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;article.Created.Equals(other.Created) && </p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;article.Published == other.Published;</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+                    <p>}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Тест в данном случае практически не отличается от предыдущего примера:/p>
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>[<span class="code-attr">Fact</span>]</p>
+                    <p><span class="code-special">public</span> <span class="code-special">async</span> <span class="code-attr">Task</span> Create_Success ()</p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> article = FakeFactory.Fixture.Create&lt;Article&gt;();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> result = <span class="code-special">await</span> _repository.Create(article);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> expected = _context.Articles.<span class="code-methodl">First</span>(e =&gt; e.Text == article.Text);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(result == expected.Id);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(article.IsEqual(expected));</p>
+                    <p>}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Функциональный код о них естественно не знает, и они никак не влияют на работу приложения. Мы по-прежнему сохраняем все преимущества переопределения метода Equals моделей, но еще и не нарушаем фундаментальных принципов.</p>
+    <p>Минус все тот же – под каждую модель необходимо создавать отдельный класс и для больших проектов это постепенно становится проблемой. Хотя на фоне первых двух вариантов, этот подход просто идеален.</p>
+    <p>Итог: легко писать, легко читать, довольно легко поддерживать.</p>
+</div>
+<div class="article-sub-sub-title"> Автоматизация </div>
+<div class="article-body-div" id="st-5">
+    <p>Последний наш вариант это использование специальных библиотек и мой личный выбор – SemanticComparison (конечно же он включен в <a href=”http://artstesh.ru/Reading/Details/3 ”>«джентельменский набор» автотестера </a>).</p>
+    <p>Эта библиотека вовсе избавляет нас от необходимости вручную создавать какие-то реализации методов сравнения. Вся работа выполняется на лету и метод Equals переопределяется в ходе выполнения теста. Есть ли потери скорости? Безусловно. Но они не критичны, а чаще не заметны, а вот выгода от использования колоссальна.</p>
+    <p>Как уже говорилось, никаких спец.методов нам реализовывать уже не нужно, потому просто пишем тест:</p>
+    <div class="article-body-code">
+        <div class="tabbed-area">
+            <div>
+                <div class="box-wrap">
+                    <p>[<span class="code-attr">Fact</span>]</p>
+                    <p><span class="code-special">public</span> <span class="code-special">async</span> <span class="code-attr">Task</span> Create_Success()</p>
+                    <p>{</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> article = FakeFactory.Fixture.Create&lt;Article&gt;();</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> result = <span class="code-special">await</span> _repository.Create(article);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;//</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> expected = _context.Articles.<span class="code-methodl">First</span>(e =&gt; e.Text == article.Text); </p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-special">var</span> source = expected.<span class="code-methodl">AsSource</span>().<span class="code-methodl">OfLikeness</span>&lt;Article&gt;().<span class="code-methodl">Without</span>(e =&gt; e.Created);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(result == expected.Id);</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span class="code-attr">Assert</span>.<span class="code-methodl">True</span>(source.Equals(article));</p>
+                    <p>}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p>Единственное изменение – добавление нового объекта source, в его определении и заключается вся магия.</p>
+    <p>И еще один очень приятный момент – возможность выключить из сравнения отдельные поля в конкретной ситуации. Так сравнение Id, или даты создания может происходить на других уровнях системы и при полном сравнении объектов по всем полям выяснится, что они не равны. Но если они не равны в соответствии с ТЗ, архитектурой или бизнес-требованиями? SemanticComparison позволяет исключить из сравнения эти поля простой настройкой. В примере выше, мы исключили дату создания (Created).</p>
+    <p>Итог?</p>
+    <p>Читабельность не хуже и не лучше предыдущих двух вариантов (лучше уже вроде и некуда).</p>
+    <p>Простота написания… Очевидно, что это шаг вперед по сравнению с созданием спец.методов – кода стало меньше, что особенно актуально когда у вас 100+ моделей в проекте.</p>
+    <p>Поддержка. Вы уже точно не забудете добавить новое поле в метод сравнения. Если что-то поменяется в модели, то тесты мгновенно об этом узнают и не преминут упасть)</p>
+    <p>Минусы? Imho, их тут нет и такой подход наиболее предпочтителен.</p>
 </div>

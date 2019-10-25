@@ -7,18 +7,18 @@ using artstesh.ru.Helpers;
 
 namespace artstesh.ru.Services
 {
-    public class ArticleCacheCacheService : IArticleCacheService
+    public class ArticleCacheService : IArticleCacheService
     {
         private static readonly string _cacheKey;
         private readonly ICacheHelper _cache;
         private readonly IArticleService _repository;
 
-        static ArticleCacheCacheService()
+        static ArticleCacheService()
         {
             _cacheKey = "article_";
         }
 
-        public ArticleCacheCacheService(IArticleService repository, ICacheHelper cache)
+        public ArticleCacheService(IArticleService repository, ICacheHelper cache)
         {
             _repository = repository;
             _cache = cache;

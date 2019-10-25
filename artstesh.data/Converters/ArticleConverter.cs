@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using artstesh.data.Entities;
 using artstesh.data.Helpers;
 using artstesh.data.Models;
@@ -11,7 +12,8 @@ namespace artstesh.data.Converters
             if (article == null) return null;
             return new ArticleModel
             {
-                Created = article.Created, Id = article.Id, Text = StringCompressor.DecompressString(article.Text),
+                Created = article.Created, Id = article.Id,
+                Text = Markdig.Markdown.ToHtml(StringCompressor.DecompressString(article.Text)),
                 Preview = article.Preview, Title = article.Title, Published = article.Published
             };
         }

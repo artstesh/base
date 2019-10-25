@@ -160,24 +160,30 @@ body {
     padding-left: 15px;
 }
 
-.article-sub-title {
+h4 {
     margin-top: 20px;
     margin-bottom: 8px;
     text-align: center;
     color: #1c678b;
     font-weight: bold;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
 }
 
-.article-body-div {
+p {
     text-align: justify;
 }
 
-.article-sub-sub-title {
+h5 {
     padding-left: 25px;
     margin-top: 10px;
     margin-bottom: 4px;
     font-style: italic;
     color: darkcyan;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 14px;
+    line-height: 1.42857143;
 }
 
 /*Article End*********************************************************************/

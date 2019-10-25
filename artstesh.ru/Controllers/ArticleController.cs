@@ -44,8 +44,6 @@ namespace artstesh.ru.Controllers
                 var addedId = await _articleCacheService.Create(model);
                 if (addedId > 0)
                 {
-                    await _alarmService.AlarmAboutArticle(model.Title,
-                        Url.Action("Details", "Reading", new {id = addedId}));
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -82,6 +80,16 @@ namespace artstesh.ru.Controllers
             }
 
             return View(model);
+        }
+        
+        [Authorize]
+        // GET: Article/Publish/5
+        public async Task<ActionResult> Publish(int id)
+        {
+            var article = await _articleCacheService.GetCached(id);
+            await _alarmService.AlarmAboutArticle(article.Title,
+                Url.Action("Details", "Reading", new {id = article.Id}));
+            return RedirectToAction(nameof(Index));
         }
     }
 }

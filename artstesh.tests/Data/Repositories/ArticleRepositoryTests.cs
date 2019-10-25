@@ -1,9 +1,11 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using artstesh.data.DbContext;
 using artstesh.data.Entities;
 using artstesh.data.Repositories;
 using artstesh.tests.FakeFactories;
+using AutoFixture;
 using AutoFixture.Xunit2;
 using SemanticComparison.Fluent;
 using Xunit;
@@ -63,13 +65,16 @@ namespace artstesh.tests.Data.Repositories
 
         [Theory]
         [AutoMoqData]
-        public async Task Create(Article article)
+        public async Task Create()
         {
+            var article = FakeFactory.Fixture.Create<Article>();
+            //
             var result = await _repository.Create(article);
             //
             var expected = _context.Articles.First(e => e.Text == article.Text);
             Assert.True(result == expected.Id);
-            Assert.True(expected.AsSource().OfLikeness<Article>().Equals(article));
+            var source = expected.AsSource().OfLikeness<Article>().Without(e => e.Created);
+            Assert.True(source.Equals(article));
         }
 
         [Theory]
@@ -104,13 +109,16 @@ namespace artstesh.tests.Data.Repositories
         {
             _context.Articles.Add(article);
             _context.SaveChanges();
+            article.Created = DateTime.Now.AddDays(-1);
             //
-            await _repository.Delete(article.Id);
+            var result = await _repository.Delete(article.Id);
             //
             var expectedNull = _context.Articles.FirstOrDefault(e => e.Id == article.Id);
             Assert.Null(expectedNull);
+            Assert.False(result);
         }
-
+        
+        
         [Theory]
         [AutoMoqData]
         public async Task Delete_No_Such_Id(int id)

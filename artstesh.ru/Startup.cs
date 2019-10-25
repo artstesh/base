@@ -52,7 +52,7 @@ namespace artstesh.ru
                 options.UseMySQL(Configuration.GetConnectionString("DataContext"));
             });
             services.AddScoped<IArticleRepository, ArticleRepository>();
-            services.AddScoped<IArticleCacheService, ArticleCacheCacheService>();
+            services.AddScoped<IArticleCacheService, ArticleCacheService>();
             services.AddSingleton<IConfigSettings, ConfigSettings>();
             services.AddScoped<ICacheHelper, CacheHelper>();
             services.AddSingleton<IGoogleRecaptchaService, GoogleRecaptchaService>();

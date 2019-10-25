@@ -5,7 +5,9 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="Markdig" Version="0.18.0" />
       <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.15" />
+      <PackageReference Include="Westwind.AspNetCore.Markdown" Version="3.2.6" />
     </ItemGroup>
 
     <ItemGroup>
