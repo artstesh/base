@@ -246,6 +246,7 @@ h5 {
 
 .tabbed-area div div, .tabs li {
     border: 1px solid #ccc;
+    border-bottom: 0;
 }
 
 .box-wrap p {

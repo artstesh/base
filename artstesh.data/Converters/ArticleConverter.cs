@@ -13,7 +13,7 @@ namespace artstesh.data.Converters
             return new ArticleModel
             {
                 Created = article.Created, Id = article.Id,
-                Text = Markdig.Markdown.ToHtml(StringCompressor.DecompressString(article.Text)),
+                Text = Markdig.Markdown.ToHtml(StringCompressor.DecompressString(article.Text)).Replace("language-",""),
                 Preview = article.Preview, Title = article.Title, Published = article.Published
             };
         }

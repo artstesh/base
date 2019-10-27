@@ -5,10 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="yandex-verification" content="d9e7371f51e35e86"/>
     <title>@ViewData["Title"] - artstesh.ru</title>
-    <meta name="google-site-verification" content="ep_mBUHJMHAUZYfg0jK1s5IevkP2jKumX_Q2M3bU7Bg" />
+    <meta name="google-site-verification" content="ep_mBUHJMHAUZYfg0jK1s5IevkP2jKumX_Q2M3bU7Bg"/>
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css"/>
         <link rel="stylesheet" href="~/css/site.css"/>
+        <link rel="stylesheet" href="~/css/vs.css">
+        <script src="~/js/highlight.pack.js"></script>
+        <script>
+        setTimeout(function () {
+                    var pres = document.querySelectorAll("pre>code");
+                    for (var i = 0; i < pres.length; i++) {
+                        hljs.highlightBlock(pres[i]);
+                    }
+                });
+        </script>
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
